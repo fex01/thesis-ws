@@ -1,0 +1,20 @@
+# cloud-nuke exclude file
+
+IAMUsers:
+  exclude:
+    names_regex:
+      - admin
+IAMRoles:
+  exclude:
+    names_regex:
+      - AWSServiceRoleForOrganizations
+      - AWSServiceRoleForSSO
+      - AWSServiceRoleForSupport
+      - AWSServiceRoleForTrustedAdvisor
+IAMServiceLinkedRoles:
+  exclude:
+    names_regex:
+      - AWSServiceRoleForOrganizations
+      - AWSServiceRoleForSSO
+      - AWSServiceRoleForSupport
+      - AWSServiceRoleForTrustedAdvisor

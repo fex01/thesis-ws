@@ -3,7 +3,7 @@
 #tfsec:ignore:aws-eks-no-public-cluster-access-to-cidr
 module "eks" {
   source  = "registry.terraform.io/terraform-aws-modules/eks/aws"
-  version = "19.0.4"
+  version = "19.17.2"
 
   cluster_name = var.eks_cluster_name
 
@@ -30,8 +30,8 @@ module "eks" {
   }
 
   cluster_endpoint_public_access = true
-  enable_irsa                          = false
-  cluster_enabled_log_types            = ["api", "authenticator", "audit", "scheduler", "controllerManager"]
+  enable_irsa                    = false
+  cluster_enabled_log_types      = ["api", "authenticator", "audit", "scheduler", "controllerManager"]
 
 
   node_security_group_additional_rules = {

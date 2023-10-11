@@ -1,7 +1,7 @@
 #tfsec:ignore:aws-ec2-require-vpc-flow-logs-for-all-vpcs
 module "vpc" {
   source  = "registry.terraform.io/terraform-aws-modules/vpc/aws"
-  version = "3.18.1"
+  version = "5.1.2"
 
   cidr                 = var.cidr_block
   azs                  = data.aws_availability_zones.avzs.names

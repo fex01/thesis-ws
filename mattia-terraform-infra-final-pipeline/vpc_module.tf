@@ -102,7 +102,7 @@ data "aws_iam_policy_document" "cloudwatch" {
 
 module "vpc_vpc-endpoints" {
   source  = "registry.terraform.io/terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
-  version = "3.18.1"
+  version = "5.1.2"
 
   vpc_id             = module.vpc.vpc_id
   security_group_ids = [aws_security_group.endpoints.id]

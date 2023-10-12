@@ -65,7 +65,7 @@ data "aws_iam_policy_document" "insight" {
       type = "AWS"
       identifiers = [
         format(
-          "arn:aws:iam::%s:user/ma.caracciolo@reply.it",
+          "arn:aws:iam::%s:user/admin",
           data.aws_caller_identity.current.account_id
         )
       ]

@@ -1,6 +1,6 @@
 variable "region" {
   type    = string
-  default = "eu-central-1"
+  default = "eu-west-3"
 }
 
 variable "vpc_name" {
@@ -30,6 +30,11 @@ variable "cidr_block" {
 }
 
 variable "db_pwd" {
-  type = string
+  type      = string
   sensitive = true
+
+  validation {
+    condition     = length(var.db_pwd) > 4
+    error_message = "The db_pwd has a minimum length of 8 characters."
+  }
 }

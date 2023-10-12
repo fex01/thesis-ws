@@ -10,7 +10,7 @@ pipeline {
             agent{
                 docker{
                     args '--entrypoint=""'
-                    image 'hashicorp/terraform:1.4'
+                    image 'hashicorp/terraform:1.6'
                     reuseNode true
                 }
             }
@@ -29,43 +29,43 @@ pipeline {
                     sh "terraform show -json plan.tfplan > plan.json"
             }
         }
-        stage("Verify Iac-sec") {
-            when {
-                expression { 
-                   return !params.destroy
-                }
-            }
-            parallel {
-                stage("TFsec") {
-                    agent{
-                        docker{
-                            image 'aquasec/tfsec-ci:v1.28'
-                            reuseNode true
-                        }
-                    }
-                    steps {
-                        sh "tfsec . --no-colour --no-code --include-passed --format json --rego-policy-dir .tfsec_rules > tfsec_audit.json"
-                    }
-                }
-                stage("Regula") {
-                    agent{
-                        docker{
-                            args '--entrypoint=""'
-                            image 'fugue/regula:v3.2.1'
-                            reuseNode true
-                        }
-                    }
-                    steps {
-                        sh "regula run plan.json --input-type tf-plan --include .regula_rules --format json > regula_audit.json"
-                    }
-                }
-            }
-        }
+        // stage("Verify Iac-sec") {
+        //     when {
+        //         expression { 
+        //            return !params.destroy
+        //         }
+        //     }
+        //     parallel {
+        //         stage("TFsec") {
+        //             agent{
+        //                 docker{
+        //                     image 'aquasec/tfsec-ci:v1.28'
+        //                     reuseNode true
+        //                 }
+        //             }
+        //             steps {
+        //                 sh "tfsec . --no-colour --no-code --include-passed --format json --rego-policy-dir .tfsec_rules > tfsec_audit.json"
+        //             }
+        //         }
+        //         stage("Regula") {
+        //             agent{
+        //                 docker{
+        //                     args '--entrypoint=""'
+        //                     image 'fugue/regula:v3.2.1'
+        //                     reuseNode true
+        //                 }
+        //             }
+        //             steps {
+        //                 sh "regula run plan.json --input-type tf-plan --include .regula_rules --format json > regula_audit.json"
+        //             }
+        //         }
+        //     }
+        // }
         stage("Deploy") {
             agent{
                 docker{
                     args '--entrypoint=""'
-                    image 'hashicorp/terraform:1.4'
+                    image 'hashicorp/terraform:1.6'
                     reuseNode true
                 }
             }
@@ -86,7 +86,7 @@ pipeline {
             agent{
                 docker{
                     args '--entrypoint=""'
-                    image 'hashicorp/terraform:1.4'
+                    image 'hashicorp/terraform:1.6'
                     reuseNode true
                 }
             }

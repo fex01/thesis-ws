@@ -44,15 +44,8 @@ terraform.rc
 .terraform.lock.hcl
 ## Folder used to store temporary test data by Terratest
 .test-data
-## rbenv
-.ruby-version
-## Intermediate file for testing
-kubeconfig
 ## environment files
-.env
+*.env
 ## aws credentials
 .aws/*
 !.aws/README.md
-
-# driftctl ignore file (contains non-public resource IDs)
-.driftignore

@@ -21,7 +21,7 @@
 			"nvmVersion": "0.39.2"
 		},
 		"ghcr.io/devcontainers/features/python:1": {
-			"version": "3.7",
+			"version": "3.9",
 			"installTools": true,
 			"optimize": false,
 			"installPath": "/usr/local/python",
@@ -34,7 +34,7 @@
 			"golangciLintVersion": "1.53.3"
 		},
 		"ghcr.io/devcontainers/features/terraform:1": {
-      "version": "1.6.0",
+      "version": "1.6.1",
 			"tflint": "0.46.1", // broken GPG key in v0.47
 			"terragrunt": "0.48.0",
 			"installSentinel": false,
@@ -131,8 +131,8 @@
 		"source=${localWorkspaceFolder}/.aws,target=/home/vscode/.aws,type=bind"
 	],
 
-	"postCreateCommand": "bash -i -c 'nvm install --lts'",
-	"postStartCommand": "git config --global --add safe.directory ${containerWorkspaceFolder}"
+	"postCreateCommand": "bash -i -c 'nvm install --lts'", 
+	"postStartCommand": "git config --global --add safe.directory ${containerWorkspaceFolder} && echo 'alias tf=terraform' >> /home/vscode/.bashrc"
 
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
 	// "remoteUser": "root"

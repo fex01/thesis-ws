@@ -49,5 +49,3 @@ terraform.rc
 ## aws credentials
 .aws/*
 !.aws/README.md
-
-learn-tf-test

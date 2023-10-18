@@ -113,6 +113,9 @@
 				"mjbvz.vscode-markdown-mermaid",
 				"mjbvz.vscode-markdown-yaml-preamble",
 				"DavidAnson.vscode-markdownlint",
+				// HashiCorp Extensions
+				"hashicorp.terraform",
+				"hashicorp.hcl",
 				// Additional Extensions
 				"streetsidesoftware.code-spell-checker",
 				"donjayamanne.githistory",

@@ -34,7 +34,7 @@
 			"golangciLintVersion": "1.53.3"
 		},
 		"ghcr.io/devcontainers/features/terraform:1": {
-      "version": "1.6.1",
+      "version": "1.6.2",
 			"tflint": "0.46.1", // broken GPG key in v0.47
 			"terragrunt": "0.48.0",
 			"installSentinel": false,

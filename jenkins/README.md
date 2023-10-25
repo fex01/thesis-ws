@@ -1,4 +1,4 @@
-# Jenkins README for Test Pipeline
+# Jenkins Test Pipeline
 
 This document serves as an instructional guide for setting up and configuring a Jenkins test pipeline, tailored specifically for the execution of this project's tests.
 Should you already possess an active Jenkins installation, the [Configuration](#configuration) section will be the sole area requiring your attention.

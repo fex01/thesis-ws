@@ -65,6 +65,9 @@ exit
 
 ## Configuration
 
+The subsequent steps outline the necessary configurations required to execute the Jenkinsfile associated with this Proof of Concept (PoC).
+These configurations are essential for the successful orchestration of the test pipeline and include adding AWS and RDS credentials to Jenkins.
+
 ### Add Credentials
 
 Navigate to `Dashboard -> Manage Jenkins -> Security -> Credentials`.
@@ -73,7 +76,8 @@ Select `System -> Global credentials (unrestricted)`.
 
 #### AWS Credentials
 
-Add AWS credentials as follows:
+If you do not possess AWS credentials, please refer to the [AWS README](/.aws/README.md) for guidance on obtaining the necessary access keys.
+Once you have acquired your credentials, proceed with the following steps to add them:
 
 - Kind: `Username with password`
 - Scope: `Global`

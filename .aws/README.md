@@ -1,56 +1,46 @@
-# AWS CLI Configuration
+# AWS CLI Configuration for DevContainer
 
-Choose either a custom configuration for the container or use the host configuration.
+This document provides a comprehensive guide for configuring the AWS Command Line Interface (CLI) within the DevContainer.
+Two distinct approaches are outlined: utilizing a custom configuration exclusive to the container, and leveraging the host machine's existing AWS configuration.
 
-If you do not have AWS credentials yet, reopen the project in the container and follow the instructions in section [Account Creation Quick and Dirty](#account-creation-quick-and-dirty).
+If you do not have AWS credentials yet, reopen the project in the container and follow the instructions in the section [Account Initialization Procedure](#account-initialization-procedure).
 
-## Custom Configuration
+## Custom Container Configuration
 
-Use this folder to store custom credentials and configuration for the DevContainer. Folder is mounted to `~/.aws` in the container.
-The content of this folder is ignored by git and will **only** stay on your local machine.
+The `.aws` directory in this repository serves as a mount point for AWS CLI configurations and credentials within the DevContainer.
+The content of this folder is configured to be ignored by the version control system, ensuring that your credentials will remain exclusively on your local machine.
 
-## Host Configuration
+## Host Configuration Integration
 
-Adapt `.devcontainer/devcontainer.json` to mount the host AWS config.
-
-Scroll down to section `mounts` and adapt the aws entry (see comment):
+Should you prefer to use your host machine's AWS configuration, the `.devcontainer/devcontainer.json` file can be modified to achieve this. Under the `mounts` section, amend the corresponding AWS entry as illustrated below:
 
 ```json
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/debian
 {
   ...
- // Configure mounts from host to container.
- "mounts": [
-  // host SSH key so you can connect to Git repos
-  "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind",
-  // AWS Config and Credentials so you can connect to AWS
-  //   use "source=${localEnv:HOME}/.aws,target=/home/vscode/.aws,type=bind" for host aws config
-  "source=${localWorkspaceFolder}/.aws,target=/home/vscode/.aws,type=bind"
- ]
+  // Configure mounts from host to container.
+  "mounts": [
+    ...
+    // To use the host's AWS configuration, replace the following line:
+    // "source=${localEnv:HOME}/.aws,target=/home/vscode/.aws,type=bind"
+    "source=${localWorkspaceFolder}/.aws,target=/home/vscode/.aws,type=bind"
+  ]
 }
 ```
 
-## Account Creation Quick and Dirty
+## Account Initialization Procedure
 
-If you do not have an AWS account yet, you can create one quick and dirty:
+If you do not currently have an AWS account, the following is a concise outline for setting up an initial account and user, distilled from AWS's more comprehensive [Getting Started Guide](https://aws.amazon.com/getting-started/guides/setup-environment/).
 
-- [Getting Started](https://aws.amazon.com/getting-started/guides/setup-environment/)
-  - created account -> creates [root user](https://docs.aws.amazon.com/signin/latest/userguide/account-root-user-type.html)
-    - enable MFA as basic security measure for root account: IAM -> Add MFA
-  - we will not use the root user for automation, as such we go on to manually create the initial IAM user:
-    - IAM -> Users -> Create user
-      - Choose name -> Next
-      - Attach policies directly -> AdministratorAccess -> Next
-      - Create user
-    - create API credentials
-      - click user name -> Create access key
-      - appreciate that we should use temporary credentials but that we **ignore that for a quick and dirty solution**
-      - Other -> Next
-      - Description: `quick-and-dirty` -> Create access key
-      - save `Access key` and `Secret access key` securely
-  - configure CLI credentials locally: `aws configure`
-    - enter `Access key ID` and `Secret access key` from above
-    - enter prefered region (e.g. `eu-central-1`)
-    - skip output format
-    - will create `~/.aws/credentials` and `~/.aws/config` files
+1. **Initial Setup**: Create an AWS account, which automatically establishes a [root user](https://docs.aws.amazon.com/signin/latest/userguide/account-root-user-type.html).
+
+    - **Security Measures**: It is advisable to enable Multi-Factor Authentication (MFA) for the root user immediately for basic security. Navigate to `IAM -> Add MFA`.
+
+2. **IAM User Creation**: For operational tasks, avoid using the root user. Instead, create a secondary IAM user with administrative privileges.
+
+    - Navigate to `IAM -> Users -> Create user` and proceed to attach the `AdministratorAccess` policy.
+
+3. **API Credentials**: Subsequent to user creation, generate the necessary API credentials.
+
+    - Click on the username and select `Create access key`. Note that although temporary credentials are recommended for heightened security, permanent credentials are deemed sufficient for the purpose of this guide. Ensure that you store the `Access key` and `Secret access key` in a secure location.
+
+4. **Local CLI Configuration**: Lastly, configure your local AWS CLI via the `aws configure` command. You will be prompted to enter the `Access key ID` and `Secret access key` generated earlier, as well as your preferred AWS region (e.g., `eu-west-3`). This action will create `~/.aws/credentials` and `~/.aws/config` files, completing the setup.

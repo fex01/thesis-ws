@@ -129,8 +129,8 @@
 	"mounts": [
 		// host SSH key so you can connect to Git repos
 		"source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind",
-		// AWS Config and Credentials so you can connect to AWS
-		//   use "source=${localEnv:HOME}/.aws,target=/home/vscode/.aws,type=bind" for host aws config
+    // To use the host's AWS configuration, replace the following line:
+    // "source=${localEnv:HOME}/.aws,target=/home/vscode/.aws,type=bind"
 		"source=${localWorkspaceFolder}/.aws,target=/home/vscode/.aws,type=bind"
 	],
 

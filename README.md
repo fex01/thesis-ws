@@ -57,3 +57,16 @@ It includes the IaC configuration written in Terraform, a Jenkinsfile for defini
 This separation allows for streamlined testing, as the test pipeline can directly check out only the executable code.
 
 For more information on the specifics of the submodule, please refer to its [README](./terraform/README.md).
+
+## Cleanup
+
+During the course of extended testing or in the event of partial failures of `terraform destroy`, there may be residual AWS resources that are not properly removed. To address this, we have employed the use of [cloud-nuke](https://github.com/gruntwork-io/cloud-nuke) throughout the implementation phase. 
+
+The `cloud-nuke` tool is incorporated in our [devcontainer](#devcontainer) and can be utilized as follows:
+
+- `cloud-nuke aws`: This command will attempt to remove all AWS resources. Exercise caution while using this command, especially in production environments. It is imperative to be fully aware of the ramifications of this action.
+  - `--config ./cloud-nuke.yaml`: Using this flag allows you to exclude predefined resources from being removed. In our setup, this involves excluding the manually-created initial IAM user and any preexisting AWS roles.
+  - `--force`: This flag enables non-interactive execution, bypassing the confirmation dialog.
+  - `AWS_PROFILE=thesis cloud-nuke aws`: To specify a particular AWS profile, precede the `cloud-nuke` command with the `AWS_PROFILE` variable set to the desired profile name.
+
+Note that usage of `cloud-nuke` is a powerful action that should be taken with full understanding and caution.

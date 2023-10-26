@@ -1,9 +1,11 @@
-# Thesis Workspace
+# Quantitative Cost Assessment of IaC Testing: PoC Workspace
 
 ## Overview
 
 This repository serves as a supporting workspace for the proof-of-concept (PoC) implementation related to the Master Thesis titled "Quantitative Cost Assessment of IaC Testing".
 While the actual PoC is encapsulated within a submodule, this repository contains the essential guides and tooling required to set up and run the PoC.
+
+This separation is done to facilitate streamlined testing, as the test pipeline can directly check out only the executable code - see [Submodule thesis-tf](#submodule-thesis-tf) for more information.
 
 ## Devcontainer
 
@@ -53,4 +55,5 @@ For a comprehensive guide on these prerequisites and on setting up a dockerized 
 The submodule is an independent repository that houses the core elements of the PoC.
 It includes the IaC configuration written in Terraform, a Jenkinsfile for defining the test pipeline, and the actual test implementations.
 This separation allows for streamlined testing, as the test pipeline can directly check out only the executable code.
+
 For more information on the specifics of the submodule, please refer to its [README](./terraform/README.md).

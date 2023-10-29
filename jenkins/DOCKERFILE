@@ -1,12 +1,41 @@
 FROM jenkins/jenkins:2.427-jdk21
+
+# Switch to root user for privileged operations
 USER root
+
+# Update the package index and install lsb-release
 RUN apt-get update && apt-get install -y lsb-release
+
+# Add Docker's GPG key
 RUN curl -fsSLo /usr/share/keyrings/docker-archive-keyring.asc \
   https://download.docker.com/linux/debian/gpg
+
+# Add Docker's APT repository
 RUN echo "deb [arch=$(dpkg --print-architecture) \
   signed-by=/usr/share/keyrings/docker-archive-keyring.asc] \
   https://download.docker.com/linux/debian \
   $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
+
+# Install Docker CLI
 RUN apt-get update && apt-get install -y docker-ce-cli
+
+# Determine the architecture and download the appropriate cloud-nuke binary
+RUN ARCH=$(dpkg --print-architecture) && \
+    if [ "$ARCH" = "amd64" ]; then \
+      curl -L -o cloud-nuke https://github.com/gruntwork-io/cloud-nuke/releases/download/v0.32.0/cloud-nuke_linux_amd64; \
+    elif [ "$ARCH" = "arm64" ]; then \
+      curl -L -o cloud-nuke https://github.com/gruntwork-io/cloud-nuke/releases/download/v0.32.0/cloud-nuke_linux_arm64; \
+    else \
+      echo "Unsupported architecture"; \
+      exit 1; \
+    fi
+
+# Move the cloud-nuke binary and set execution permissions
+RUN mv cloud-nuke /usr/local/bin/cloud-nuke && \
+    chmod a+x /usr/local/bin/cloud-nuke
+
+# Switch back to jenkins user
 USER jenkins
+
+# Install Jenkins plugins
 RUN jenkins-plugin-cli --plugins "blueocean docker-workflow"

@@ -65,8 +65,20 @@ During the course of extended testing or in the event of partial failures of `te
 The `cloud-nuke` tool is incorporated in our [devcontainer](#devcontainer) and can be utilized as follows:
 
 - `cloud-nuke aws`: This command will attempt to remove all AWS resources. Exercise caution while using this command, especially in production environments. It is imperative to be fully aware of the ramifications of this action.
-  - `--config ./cloud-nuke.yaml`: Using this flag allows you to exclude predefined resources from being removed. In our setup, this involves excluding the manually-created initial IAM user and any preexisting AWS roles.
+  - `--config terraform/cloud-nuke.yaml`: Utilizing this flag will incorporate the exemption rules as explained in the [Cloud-Nuke Exemption Configuration](#cloud-nuke-exemption-configuration) subsection. This safeguards essential resources like the manually-created initial IAM user and any preexisting AWS roles from unintended deletion.
   - `--force`: This flag enables non-interactive execution, bypassing the confirmation dialog.
   - `AWS_PROFILE=thesis cloud-nuke aws`: To specify a particular AWS profile, precede the `cloud-nuke` command with the `AWS_PROFILE` variable set to the desired profile name.
 
 Note that usage of `cloud-nuke` is a powerful action that should be taken with full understanding and caution.
+
+### Additional Cleanup Feature: The "Nuke" Stage in Test Pipeline
+
+In addition to manual invocation, our test pipeline includes a dedicated stage named "nuke" that is designed to automate the cleanup process. If `cloud-nuke` is installed on the Jenkins server, this stage will execute `cloud-nuke` using the AWS credentials provided. You have the option to enable or disable this stage by setting the pipeline parameter `use_cloud_nuke`.
+
+If you are utilizing our custom Dockerfile for Jenkins, then `cloud-nuke` comes preinstalled on the Jenkins server, enabling immediate use of this feature.
+
+### Cloud-Nuke Exemption Configuration
+
+The `cloud-nuke` exemption configuration file, located at [terraform/cloud-nuke.yaml](https://github.com/fex01/thesis-tf/blob/main/cloud-nuke.yaml), is instrumental for safeguarding essential resources during both automated pipeline cleanup and manual `cloud-nuke` executions. Specifically, the account credentials used for deployment should be included in this exemption list. In our particular setup, these credentials are associated with an account named `admin`. If your deployment uses a different account name, it is imperative to update this configuration file accordingly to prevent unintentional deletions.
+
+Whether you are running the "Nuke" stage in the test pipeline or executing `cloud-nuke` manually, this exemption configuration ensures a more secure cleanup process, minimizing the risk of accidental resource removal.

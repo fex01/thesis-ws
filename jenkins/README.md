@@ -68,6 +68,10 @@ exit
 The subsequent steps outline the necessary configurations required to execute the Jenkinsfile associated with this Proof of Concept (PoC).
 These configurations are essential for the successful orchestration of the test pipeline and include adding AWS and RDS credentials to Jenkins.
 
+### Preinstalled Tools
+
+The custom Docker image provided for Jenkins comes preinstalled with `cloud-nuke`, which is employed in the cleanup stage of the test pipeline. For more details, refer to the [Cleanup](/README.md#cleanup) section. If you are using an individual Jenkins installation and still wish to utilize the cleanup stage, you will need to manually install `cloud-nuke` on your server. Instructions for this installation can be found [here](https://github.com/gruntwork-io/cloud-nuke#install). If `cloud-nuke` is not installed, the cleanup stage will be gracefully skipped.
+
 ### Add Credentials
 
 Navigate to `Dashboard -> Manage Jenkins -> Security -> Credentials`.

@@ -79,6 +79,6 @@ If you are utilizing our custom Dockerfile for Jenkins, then `cloud-nuke` comes 
 
 ### Cloud-Nuke Exemption Configuration
 
-The `cloud-nuke` exemption configuration file, located at [terraform/cloud-nuke.yaml](https://github.com/fex01/thesis-tf/blob/main/cloud-nuke.yaml), is instrumental for safeguarding essential resources during both automated pipeline cleanup and manual `cloud-nuke` executions. Specifically, the account credentials used for deployment should be included in this exemption list. In our particular setup, these credentials are associated with an account named `admin`. If your deployment uses a different account name, it is imperative to update this configuration file accordingly to prevent unintentional deletions.
+The `cloud-nuke` exemption configuration file, located at [terraform/cloud-nuke.yaml](/terraform/cloud-nuke.yaml), is instrumental for safeguarding essential resources during both automated pipeline cleanup and manual `cloud-nuke` executions. Specifically, the account credentials used for deployment should be included in this exemption list. In our particular setup, these credentials are associated with an account named `admin`. If your deployment uses a different account name, it is imperative to update this configuration file accordingly to prevent unintentional deletions.
 
 Whether you are running the "Nuke" stage in the test pipeline or executing `cloud-nuke` manually, this exemption configuration ensures a more secure cleanup process, minimizing the risk of accidental resource removal.

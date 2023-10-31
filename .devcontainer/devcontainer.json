@@ -5,6 +5,9 @@
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
 	"image": "mcr.microsoft.com/devcontainers/base:bullseye",
 
+	// reference .env file for local environment variables
+	"runArgs": ["--env-file", "${localWorkspaceFolder}/.env"],
+
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	"features": {
 		"ghcr.io/devcontainers/features/aws-cli:1": {
@@ -132,9 +135,8 @@
 	"mounts": [
 		// host SSH key so you can connect to Git repos
 		"source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind",
-    // To use the host's AWS configuration, replace the following line:
+    // To use the host's AWS configuration, uncomment the following line:
     // "source=${localEnv:HOME}/.aws,target=/home/vscode/.aws,type=bind"
-		"source=${localWorkspaceFolder}/.aws,target=/home/vscode/.aws,type=bind"
 	],
 
 	"postCreateCommand": "bash -i -c 'nvm install --lts'", 

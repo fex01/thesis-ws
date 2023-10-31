@@ -31,8 +31,17 @@ For more details, consult the [VS Code Guide](https://code.visualstudio.com/docs
 
 ### Devcontainer Configuration
 
-- AWS Credentials: See [AWS Readme](./.aws/README.md) for configuring AWS credentials.
-- Devcontainer Configuration: Refer to `./.devcontainer/devcontainer.json` for information on installed tools and how to individualize your setup.
+#### Credentials Configuration
+
+- **AWS Credentials**: You have two options for configuring AWS credentials within the DevContainer:
+  1. **.env File**: Create a `.env` file based on the [.env_template](/.env_template) available in the project root directory. Populate `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` with your actual AWS credentials.
+  2. **AWS Host Configuration Integration**: You can also use the host machine's AWS configuration by following the instructions under [AWS Host Configuration Integration](#aws-host-configuration-integration).
+
+- **InfraCost Credentials**: To configure InfraCost, create a `.env` file based on the [.env_template](/.env_template)  available in the project root directory. Populate `INFRACOST_API_KEY` with your actual InfraCost API key.
+
+#### Devcontainer Configuration Details
+
+Refer to `./.devcontainer/devcontainer.json` for information on installed tools and how to individualize your setup.
 
 ### Running the Devcontainer
 
@@ -82,3 +91,44 @@ If you are utilizing our custom Dockerfile for Jenkins, then `cloud-nuke` comes 
 The `cloud-nuke` exemption configuration file, located at [terraform/cloud-nuke.yaml](/terraform/cloud-nuke.yaml), is instrumental for safeguarding essential resources during both automated pipeline cleanup and manual `cloud-nuke` executions. Specifically, the account credentials used for deployment should be included in this exemption list. In our particular setup, these credentials are associated with an account named `admin`. If your deployment uses a different account name, it is imperative to update this configuration file accordingly to prevent unintentional deletions.
 
 Whether you are running the "Nuke" stage in the test pipeline or executing `cloud-nuke` manually, this exemption configuration ensures a more secure cleanup process, minimizing the risk of accidental resource removal.
+
+
+## Account Creation
+
+### AWS
+
+If you do not currently have an AWS account, the following is a concise outline for setting up an initial account and user, distilled from AWS's more comprehensive [Getting Started Guide](https://aws.amazon.com/getting-started/guides/setup-environment/).
+
+1. **Initial Setup**: Create an AWS account, which automatically establishes a [root user](https://docs.aws.amazon.com/signin/latest/userguide/account-root-user-type.html).
+
+    - **Security Measures**: It is advisable to enable Multi-Factor Authentication (MFA) for the root user immediately for basic security. Navigate to `IAM -> Add MFA`.
+
+2. **IAM User Creation**: For operational tasks, avoid using the root user. Instead, create a secondary IAM user with administrative privileges.
+
+    - Navigate to `IAM -> Users -> Create user` and proceed to attach the `AdministratorAccess` policy.
+
+3. **API Credentials**: Subsequent to user creation, generate the necessary API credentials.
+
+    - Click on the username and select `Create access key`. Note that although temporary credentials are recommended for heightened security, permanent credentials are deemed sufficient for the purpose of this guide. Ensure that you store the `Access key` and `Secret access key` in a secure location.
+
+4. **Local CLI Configuration**: Lastly, configure your local AWS CLI via the `aws configure` command. You will be prompted to enter the `Access key ID` and `Secret access key` generated earlier, as well as your preferred AWS region (e.g., `eu-west-3`). This action will create `~/.aws/credentials` and `~/.aws/config` files, completing the setup.
+
+#### AWS Host Configuration Integration
+
+Should you prefer to use your host machine's AWS configuration, the `.devcontainer/devcontainer.json` file can be modified to achieve this. Under the `mounts` section, amend the corresponding AWS entry as illustrated below:
+
+```json
+{
+  ...
+  // Configure mounts from host to container.
+  "mounts": [
+    ...
+    // To use the host's AWS configuration, uncomment the following line:
+    // "source=${localEnv:HOME}/.aws,target=/home/vscode/.aws,type=bind"
+  ]
+}
+```
+
+### Infracost
+
+TODO

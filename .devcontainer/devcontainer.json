@@ -3,28 +3,46 @@
 {
 	"name": "Thesis_WS",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+	// https://github.com/devcontainers/templates/tree/main/src/debian
 	"image": "mcr.microsoft.com/devcontainers/base:bullseye",
 
 	// reference .env file for local environment variables
 	"runArgs": ["--env-file", "${localWorkspaceFolder}/.env"],
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
+	//
+	// Links lead to feature documentation / tool releases overview
+	// Keep in mind to keep devcontainer tool versions and pipeline tool versions in sync if both are used
 	"features": {
+		// https://github.com/devcontainers/features/tree/main/src/aws-cli
 		"ghcr.io/devcontainers/features/aws-cli:1": {
-        "version": "2.12.4"
+        "version": "2.13.32" // https://raw.githubusercontent.com/aws/aws-cli/v2/CHANGELOG.rst
 		},
+		// https://github.com/devcontainers/features/tree/main/src/docker-in-docker
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {
+			// fails for debian:bookworm, successful for debian:bullseye (arch=arm64)
+			// fails for versions newer than 23.0.7 (arch=arm64)
+			"version": "23.0.7", // https://docs.docker.com/engine/release-notes/24.0/
+			"moby": true,
+			"dockerDashComposeVersion": "v2",
+			"azureDnsAutoDetection": false,
+			"dockerDefaultAddressPool": "base=192.168.0.0/16,size=24",
+			"installDockerBuildx": true
+		},
+		// https://github.com/devcontainers/features/tree/main/src/git
 		"ghcr.io/devcontainers/features/git:1": {
-        "version": "2.41.0",
+        "version": "2.42.1", // https://github.com/git/git/tags
 				"ppa": true
 		},
-		"ghcr.io/devcontainers/features/node:1": {
-			"version": "18",
-			"nodeGypDependencies": true,
-			"nvmInstallPath": "/usr/local/share/nvm",
-			"nvmVersion": "0.39.2"
+		// https://github.com/devcontainers/features/tree/main/src/go
+    "ghcr.io/devcontainers/features/go:1": {
+			"version": "1.21.3", // https://go.dev/dl/
+			"golangciLintVersion": "1.55.2" // https://github.com/golangci/golangci-lint/releases
 		},
+		// https://github.com/devcontainers/features/tree/main/src/python
 		"ghcr.io/devcontainers/features/python:1": {
-			"version": "3.9",
+			// 3.12 fails installation
+			"version": "3.12", // https://www.python.org/downloads/source/
 			"installTools": true,
 			"optimize": false,
 			"installPath": "/usr/local/python",
@@ -32,45 +50,31 @@
 			"configureJupyterlabAllowOrigin": "",
 			"httpProxy": ""
 		},
-    "ghcr.io/devcontainers/features/go:1": {
-			"version": "1.21.3",
-			"golangciLintVersion": "1.53.3"
-		},
+		// https://github.com/devcontainers/features/tree/main/src/terraform
 		"ghcr.io/devcontainers/features/terraform:1": {
-      "version": "1.6.2",
-			"tflint": "0.46.1", // broken GPG key in v0.47
-			"terragrunt": "0.48.0",
+      "version": "1.6.2", // https://github.com/hashicorp/terraform/releases
+			"tflint": "0.46.1", // broken GPG key in v0.47 https://github.com/terraform-linters/tflint/releases
+			"terragrunt": "0.48.0", // https://github.com/gruntwork-io/terragrunt/releases
 			"installSentinel": false,
 			"installTfsec": "true", // version number does not work, only true for latest
 			"installTerraformDocs": false,
 			"httpProxy": ""
 		},
-		"ghcr.io/devcontainers/features/docker-in-docker:2": {
-			"version": "20.10.25",  //  No full or partial Docker / Moby version match found for "23.0.6" on OS debian bullseye (arm64)
-			"moby": true,
-			"dockerDashComposeVersion": "v2",
-			"azureDnsAutoDetection": false,
-			"dockerDefaultAddressPool": "base=192.168.0.0/16,size=24",
-			"installDockerBuildx": true
-		},
+		// https://github.com/devcontainers-contrib/features/tree/main/src/apt-get-packages
 		"ghcr.io/devcontainers-contrib/features/apt-get-packages:1": {
-        "packages": "vim,gnupg,software-properties-common,curl",
+        "packages": "vim,gnupg,software-properties-common,curl,jq",
 				"ppas": "",
 				"clean_ppas": false,
 				"preserve_apt_list": true,
 				"force_ppas_on_non_ubuntu": false
 		},
-		"ghcr.io/devcontainers-contrib/features/packer-asdf:2": {
-        "version": "1.9.1"
-		},
-		"ghcr.io/devcontainers-contrib/features/vault-asdf:2": {
-        "version": "1.14.0"
-		},
+		// https://github.com/devcontainers-contrib/features/tree/main/src/cloud-nuke
 		"ghcr.io/devcontainers-contrib/features/cloud-nuke:1": {
-        "version": "0.32.0"
+        "version": "0.32.0" // https://github.com/gruntwork-io/cloud-nuke/releases
 		},
+		// https://github.com/devcontainers-contrib/features/tree/main/src/infracost
 		"ghcr.io/devcontainers-contrib/features/infracost:1": {
-				"version": "0.10.30"
+				"version": "0.10.30" // https://github.com/infracost/infracost/releases
 		}
 	},
 
@@ -138,8 +142,7 @@
     // To use the host's AWS configuration, uncomment the following line:
     // "source=${localEnv:HOME}/.aws,target=/home/vscode/.aws,type=bind"
 	],
-
-	"postCreateCommand": "bash -i -c 'nvm install --lts'", 
+	
 	"postStartCommand": "git config --global --add safe.directory ${containerWorkspaceFolder} && echo 'alias tf=terraform' >> /home/vscode/.bashrc"
 
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.

@@ -49,3 +49,6 @@ terraform.rc
 ## aws credentials
 .aws/*
 !.aws/README.md
+
+# VS Code
+.vscode/*

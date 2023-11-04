@@ -19,21 +19,6 @@ RUN echo "deb [arch=$(dpkg --print-architecture) \
 # Install Docker CLI
 RUN apt-get update && apt-get install -y docker-ce-cli
 
-# Determine the architecture and download the appropriate cloud-nuke binary
-RUN ARCH=$(dpkg --print-architecture) && \
-    if [ "$ARCH" = "amd64" ]; then \
-      curl -L -o cloud-nuke https://github.com/gruntwork-io/cloud-nuke/releases/download/v0.32.0/cloud-nuke_linux_amd64; \
-    elif [ "$ARCH" = "arm64" ]; then \
-      curl -L -o cloud-nuke https://github.com/gruntwork-io/cloud-nuke/releases/download/v0.32.0/cloud-nuke_linux_arm64; \
-    else \
-      echo "Unsupported architecture"; \
-      exit 1; \
-    fi
-
-# Move the cloud-nuke binary and set execution permissions
-RUN mv cloud-nuke /usr/local/bin/cloud-nuke && \
-    chmod a+x /usr/local/bin/cloud-nuke
-
 # Switch back to jenkins user
 USER jenkins
 

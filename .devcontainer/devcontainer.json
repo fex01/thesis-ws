@@ -130,7 +130,8 @@
 				"streetsidesoftware.code-spell-checker",
 				"donjayamanne.githistory",
 				"GitHub.copilot",
-				"golang.vscode-go"
+				"golang.vscode-go",
+				"mechatroner.rainbow-csv"
 			]
     }
 	},

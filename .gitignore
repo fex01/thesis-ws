@@ -46,9 +46,9 @@ terraform.rc
 .test-data
 ## environment files
 *.env
-## aws credentials
-.aws/*
-!.aws/README.md
 
 # VS Code
 .vscode/*
+
+# tmp files and folders
+tmp*

@@ -1,0 +1,1450 @@
+{
+  "version": "0.2",
+  "metadata": {
+    "infracostCommand": "breakdown",
+    "vcsBranch": "HEAD",
+    "vcsCommitSha": "380fc92781802d9e93c98defbd0130d055b341d8",
+    "vcsCommitAuthorName": "fex",
+    "vcsCommitAuthorEmail": "git@fexmail.de",
+    "vcsCommitTimestamp": "2023-11-03T15:31:17Z",
+    "vcsCommitMessage": "cost calculation pipeline integration",
+    "vcsRepositoryUrl": "https://github.com/fex01/thesis-tf.git"
+  },
+  "currency": "USD",
+  "projects": [
+    {
+      "name": "fex01/thesis-tf/plan.json",
+      "metadata": {
+        "path": "plan.json",
+        "type": "terraform_plan_json",
+        "policySha": "6d0d4b3f406858092e62744709fd998a34364a58",
+        "pastPolicySha": "0",
+        "vcsSubPath": "plan.json",
+        "providers": [
+          {
+            "name": "aws"
+          },
+          {
+            "name": "cloudinit"
+          },
+          {
+            "name": "cloudinit"
+          },
+          {
+            "name": "kubernetes"
+          },
+          {
+            "name": "time"
+          },
+          {
+            "name": "tls"
+          }
+        ]
+      },
+      "pastBreakdown": {
+        "resources": [],
+        "totalHourlyCost": "0",
+        "totalMonthlyCost": "0"
+      },
+      "breakdown": {
+        "resources": [
+          {
+            "name": "aws_db_instance.rds_db[0]",
+            "resourceType": "aws_db_instance",
+            "tags": {
+              "LAB": "thesis",
+              "db_name": "rds_db",
+              "infra": "terraform"
+            },
+            "metadata": {},
+            "hourlyCost": "0.0482876712328767116",
+            "monthlyCost": "35.25",
+            "costComponents": [
+              {
+                "name": "Database instance (on-demand, Multi-AZ, db.t3.micro)",
+                "unit": "hours",
+                "hourlyQuantity": "1",
+                "monthlyQuantity": "730",
+                "price": "0.041",
+                "hourlyCost": "0.041",
+                "monthlyCost": "29.93"
+              },
+              {
+                "name": "Storage (general purpose SSD, gp2)",
+                "unit": "GB",
+                "hourlyQuantity": "0.0273972602739726",
+                "monthlyQuantity": "20",
+                "price": "0.266",
+                "hourlyCost": "0.0072876712328767116",
+                "monthlyCost": "5.32"
+              },
+              {
+                "name": "Additional backup storage",
+                "unit": "GB",
+                "hourlyQuantity": null,
+                "monthlyQuantity": null,
+                "price": "0.1",
+                "hourlyCost": null,
+                "monthlyCost": null
+              },
+              {
+                "name": "Performance Insights API",
+                "unit": "1000 requests",
+                "hourlyQuantity": null,
+                "monthlyQuantity": null,
+                "price": "0.01",
+                "hourlyCost": null,
+                "monthlyCost": null
+              }
+            ]
+          },
+          {
+            "name": "aws_kms_key.rds_performance_insights",
+            "resourceType": "aws_kms_key",
+            "tags": {},
+            "metadata": {},
+            "hourlyCost": "0.0013698630136986",
+            "monthlyCost": "1",
+            "costComponents": [
+              {
+                "name": "Customer master key",
+                "unit": "months",
+                "hourlyQuantity": "0.0013698630136986",
+                "monthlyQuantity": "1",
+                "price": "1",
+                "hourlyCost": "0.0013698630136986",
+                "monthlyCost": "1"
+              },
+              {
+                "name": "Requests",
+                "unit": "10k requests",
+                "hourlyQuantity": null,
+                "monthlyQuantity": null,
+                "price": "0.03",
+                "hourlyCost": null,
+                "monthlyCost": null
+              },
+              {
+                "name": "ECC GenerateDataKeyPair requests",
+                "unit": "10k requests",
+                "hourlyQuantity": null,
+                "monthlyQuantity": null,
+                "price": "0.1",
+                "hourlyCost": null,
+                "monthlyCost": null
+              },
+              {
+                "name": "RSA GenerateDataKeyPair requests",
+                "unit": "10k requests",
+                "hourlyQuantity": null,
+                "monthlyQuantity": null,
+                "price": "0.1",
+                "hourlyCost": null,
+                "monthlyCost": null
+              }
+            ]
+          },
+          {
+            "name": "aws_kms_key.vpc_key",
+            "resourceType": "aws_kms_key",
+            "tags": {},
+            "metadata": {},
+            "hourlyCost": "0.0013698630136986",
+            "monthlyCost": "1",
+            "costComponents": [
+              {
+                "name": "Customer master key",
+                "unit": "months",
+                "hourlyQuantity": "0.0013698630136986",
+                "monthlyQuantity": "1",
+                "price": "1",
+                "hourlyCost": "0.0013698630136986",
+                "monthlyCost": "1"
+              },
+              {
+                "name": "Requests",
+                "unit": "10k requests",
+                "hourlyQuantity": null,
+                "monthlyQuantity": null,
+                "price": "0.03",
+                "hourlyCost": null,
+                "monthlyCost": null
+              },
+              {
+                "name": "ECC GenerateDataKeyPair requests",
+                "unit": "10k requests",
+                "hourlyQuantity": null,
+                "monthlyQuantity": null,
+                "price": "0.1",
+                "hourlyCost": null,
+                "monthlyCost": null
+              },
+              {
+                "name": "RSA GenerateDataKeyPair requests",
+                "unit": "10k requests",
+                "hourlyQuantity": null,
+                "monthlyQuantity": null,
+                "price": "0.1",
+                "hourlyCost": null,
+                "monthlyCost": null
+              }
+            ]
+          },
+          {
+            "name": "module.eks.aws_eks_cluster.this[0]",
+            "resourceType": "aws_eks_cluster",
+            "tags": {
+              "LAB": "thesis",
+              "infra": "terraform"
+            },
+            "metadata": {},
+            "hourlyCost": "0.1",
+            "monthlyCost": "73",
+            "costComponents": [
+              {
+                "name": "EKS cluster",
+                "unit": "hours",
+                "hourlyQuantity": "1",
+                "monthlyQuantity": "730",
+                "price": "0.1",
+                "hourlyCost": "0.1",
+                "monthlyCost": "73"
+              }
+            ]
+          },
+          {
+            "name": "module.eks.module.eks_managed_node_group[\"private-nodes\"].aws_eks_node_group.this[0]",
+            "resourceType": "aws_eks_node_group",
+            "tags": {
+              "LAB": "thesis",
+              "Name": "private-nodes",
+              "infra": "terraform"
+            },
+            "metadata": {},
+            "hourlyCost": "0.0456780821917808216",
+            "monthlyCost": "33.345",
+            "costComponents": [
+              {
+                "name": "Instance usage (Linux/UNIX, on-demand, t3a.medium)",
+                "unit": "hours",
+                "hourlyQuantity": "1",
+                "monthlyQuantity": "730",
+                "price": "0.0425",
+                "hourlyCost": "0.0425",
+                "monthlyCost": "31.025"
+              },
+              {
+                "name": "Storage (general purpose SSD, gp2)",
+                "unit": "GB",
+                "hourlyQuantity": "0.0273972602739726",
+                "monthlyQuantity": "20",
+                "price": "0.116",
+                "hourlyCost": "0.0031780821917808216",
+                "monthlyCost": "2.32"
+              }
+            ]
+          },
+          {
+            "name": "module.eks.module.kms.aws_kms_key.this[0]",
+            "resourceType": "aws_kms_key",
+            "tags": {
+              "LAB": "thesis",
+              "infra": "terraform"
+            },
+            "metadata": {},
+            "hourlyCost": "0.0013698630136986",
+            "monthlyCost": "1",
+            "costComponents": [
+              {
+                "name": "Customer master key",
+                "unit": "months",
+                "hourlyQuantity": "0.0013698630136986",
+                "monthlyQuantity": "1",
+                "price": "1",
+                "hourlyCost": "0.0013698630136986",
+                "monthlyCost": "1"
+              },
+              {
+                "name": "Requests",
+                "unit": "10k requests",
+                "hourlyQuantity": null,
+                "monthlyQuantity": null,
+                "price": "0.03",
+                "hourlyCost": null,
+                "monthlyCost": null
+              },
+              {
+                "name": "ECC GenerateDataKeyPair requests",
+                "unit": "10k requests",
+                "hourlyQuantity": null,
+                "monthlyQuantity": null,
+                "price": "0.1",
+                "hourlyCost": null,
+                "monthlyCost": null
+              },
+              {
+                "name": "RSA GenerateDataKeyPair requests",
+                "unit": "10k requests",
+                "hourlyQuantity": null,
+                "monthlyQuantity": null,
+                "price": "0.1",
+                "hourlyCost": null,
+                "monthlyCost": null
+              }
+            ]
+          },
+          {
+            "name": "module.vpc.aws_cloudwatch_log_group.flow_log[0]",
+            "resourceType": "aws_cloudwatch_log_group",
+            "tags": {
+              "LAB": "thesis",
+              "infra": "terraform"
+            },
+            "metadata": {},
+            "costComponents": [
+              {
+                "name": "Data ingested",
+                "unit": "GB",
+                "hourlyQuantity": null,
+                "monthlyQuantity": null,
+                "price": "0.5985",
+                "hourlyCost": null,
+                "monthlyCost": null
+              },
+              {
+                "name": "Archival Storage",
+                "unit": "GB",
+                "hourlyQuantity": null,
+                "monthlyQuantity": null,
+                "price": "0.0315",
+                "hourlyCost": null,
+                "monthlyCost": null
+              },
+              {
+                "name": "Insights queries data scanned",
+                "unit": "GB",
+                "hourlyQuantity": null,
+                "monthlyQuantity": null,
+                "price": "0.0059",
+                "hourlyCost": null,
+                "monthlyCost": null
+              }
+            ]
+          },
+          {
+            "name": "module.vpc_vpc-endpoints.aws_vpc_endpoint.this[\"cloudwatch\"]",
+            "resourceType": "aws_vpc_endpoint",
+            "tags": {
+              "LAB": "thesis",
+              "Name": "logs",
+              "infra": "terraform"
+            },
+            "metadata": {},
+            "hourlyCost": "0.011",
+            "monthlyCost": "8.03",
+            "costComponents": [
+              {
+                "name": "Data processed (first 1PB)",
+                "unit": "GB",
+                "hourlyQuantity": null,
+                "monthlyQuantity": null,
+                "price": "0.01",
+                "hourlyCost": null,
+                "monthlyCost": null
+              },
+              {
+                "name": "Endpoint (Interface)",
+                "unit": "hours",
+                "hourlyQuantity": "1",
+                "monthlyQuantity": "730",
+                "price": "0.011",
+                "hourlyCost": "0.011",
+                "monthlyCost": "8.03"
+              }
+            ]
+          },
+          {
+            "name": "module.vpc_vpc-endpoints.aws_vpc_endpoint.this[\"ec2\"]",
+            "resourceType": "aws_vpc_endpoint",
+            "tags": {
+              "LAB": "thesis",
+              "Name": "ec2",
+              "infra": "terraform"
+            },
+            "metadata": {},
+            "hourlyCost": "0.011",
+            "monthlyCost": "8.03",
+            "costComponents": [
+              {
+                "name": "Data processed (first 1PB)",
+                "unit": "GB",
+                "hourlyQuantity": null,
+                "monthlyQuantity": null,
+                "price": "0.01",
+                "hourlyCost": null,
+                "monthlyCost": null
+              },
+              {
+                "name": "Endpoint (Interface)",
+                "unit": "hours",
+                "hourlyQuantity": "1",
+                "monthlyQuantity": "730",
+                "price": "0.011",
+                "hourlyCost": "0.011",
+                "monthlyCost": "8.03"
+              }
+            ]
+          },
+          {
+            "name": "module.vpc_vpc-endpoints.aws_vpc_endpoint.this[\"ec2messages\"]",
+            "resourceType": "aws_vpc_endpoint",
+            "tags": {
+              "LAB": "thesis",
+              "Name": "ec2messages",
+              "infra": "terraform"
+            },
+            "metadata": {},
+            "hourlyCost": "0.011",
+            "monthlyCost": "8.03",
+            "costComponents": [
+              {
+                "name": "Data processed (first 1PB)",
+                "unit": "GB",
+                "hourlyQuantity": null,
+                "monthlyQuantity": null,
+                "price": "0.01",
+                "hourlyCost": null,
+                "monthlyCost": null
+              },
+              {
+                "name": "Endpoint (Interface)",
+                "unit": "hours",
+                "hourlyQuantity": "1",
+                "monthlyQuantity": "730",
+                "price": "0.011",
+                "hourlyCost": "0.011",
+                "monthlyCost": "8.03"
+              }
+            ]
+          },
+          {
+            "name": "module.vpc_vpc-endpoints.aws_vpc_endpoint.this[\"ecr_api\"]",
+            "resourceType": "aws_vpc_endpoint",
+            "tags": {
+              "LAB": "thesis",
+              "Name": "ecr_api",
+              "infra": "terraform"
+            },
+            "metadata": {},
+            "hourlyCost": "0.011",
+            "monthlyCost": "8.03",
+            "costComponents": [
+              {
+                "name": "Data processed (first 1PB)",
+                "unit": "GB",
+                "hourlyQuantity": null,
+                "monthlyQuantity": null,
+                "price": "0.01",
+                "hourlyCost": null,
+                "monthlyCost": null
+              },
+              {
+                "name": "Endpoint (Interface)",
+                "unit": "hours",
+                "hourlyQuantity": "1",
+                "monthlyQuantity": "730",
+                "price": "0.011",
+                "hourlyCost": "0.011",
+                "monthlyCost": "8.03"
+              }
+            ]
+          },
+          {
+            "name": "module.vpc_vpc-endpoints.aws_vpc_endpoint.this[\"ecr_dkr\"]",
+            "resourceType": "aws_vpc_endpoint",
+            "tags": {
+              "LAB": "thesis",
+              "Name": "ecr_dkr",
+              "infra": "terraform"
+            },
+            "metadata": {},
+            "hourlyCost": "0.011",
+            "monthlyCost": "8.03",
+            "costComponents": [
+              {
+                "name": "Data processed (first 1PB)",
+                "unit": "GB",
+                "hourlyQuantity": null,
+                "monthlyQuantity": null,
+                "price": "0.01",
+                "hourlyCost": null,
+                "monthlyCost": null
+              },
+              {
+                "name": "Endpoint (Interface)",
+                "unit": "hours",
+                "hourlyQuantity": "1",
+                "monthlyQuantity": "730",
+                "price": "0.011",
+                "hourlyCost": "0.011",
+                "monthlyCost": "8.03"
+              }
+            ]
+          },
+          {
+            "name": "module.vpc_vpc-endpoints.aws_vpc_endpoint.this[\"ssm\"]",
+            "resourceType": "aws_vpc_endpoint",
+            "tags": {
+              "LAB": "thesis",
+              "Name": "ssm",
+              "infra": "terraform"
+            },
+            "metadata": {},
+            "hourlyCost": "0.011",
+            "monthlyCost": "8.03",
+            "costComponents": [
+              {
+                "name": "Data processed (first 1PB)",
+                "unit": "GB",
+                "hourlyQuantity": null,
+                "monthlyQuantity": null,
+                "price": "0.01",
+                "hourlyCost": null,
+                "monthlyCost": null
+              },
+              {
+                "name": "Endpoint (Interface)",
+                "unit": "hours",
+                "hourlyQuantity": "1",
+                "monthlyQuantity": "730",
+                "price": "0.011",
+                "hourlyCost": "0.011",
+                "monthlyCost": "8.03"
+              }
+            ]
+          },
+          {
+            "name": "module.vpc_vpc-endpoints.aws_vpc_endpoint.this[\"ssmmessages\"]",
+            "resourceType": "aws_vpc_endpoint",
+            "tags": {
+              "LAB": "thesis",
+              "Name": "ssmmessages",
+              "infra": "terraform"
+            },
+            "metadata": {},
+            "hourlyCost": "0.011",
+            "monthlyCost": "8.03",
+            "costComponents": [
+              {
+                "name": "Data processed (first 1PB)",
+                "unit": "GB",
+                "hourlyQuantity": null,
+                "monthlyQuantity": null,
+                "price": "0.01",
+                "hourlyCost": null,
+                "monthlyCost": null
+              },
+              {
+                "name": "Endpoint (Interface)",
+                "unit": "hours",
+                "hourlyQuantity": "1",
+                "monthlyQuantity": "730",
+                "price": "0.011",
+                "hourlyCost": "0.011",
+                "monthlyCost": "8.03"
+              }
+            ]
+          },
+          {
+            "name": "module.vpc_vpc-endpoints.aws_vpc_endpoint.this[\"sts\"]",
+            "resourceType": "aws_vpc_endpoint",
+            "tags": {
+              "LAB": "thesis",
+              "Name": "sts",
+              "infra": "terraform"
+            },
+            "metadata": {},
+            "hourlyCost": "0.011",
+            "monthlyCost": "8.03",
+            "costComponents": [
+              {
+                "name": "Data processed (first 1PB)",
+                "unit": "GB",
+                "hourlyQuantity": null,
+                "monthlyQuantity": null,
+                "price": "0.01",
+                "hourlyCost": null,
+                "monthlyCost": null
+              },
+              {
+                "name": "Endpoint (Interface)",
+                "unit": "hours",
+                "hourlyQuantity": "1",
+                "monthlyQuantity": "730",
+                "price": "0.011",
+                "hourlyCost": "0.011",
+                "monthlyCost": "8.03"
+              }
+            ]
+          }
+        ],
+        "freeResources": [
+          {
+            "name": "aws_security_group.db_plane_sg",
+            "resourceType": "aws_security_group",
+            "tags": {
+              "LAB": "thesis",
+              "Name": "db-plane-sg",
+              "infra": "terraform"
+            },
+            "metadata": {}
+          },
+          {
+            "name": "aws_security_group.endpoints",
+            "resourceType": "aws_security_group",
+            "tags": {
+              "LAB": "thesis",
+              "Name": "endpoints-ingress",
+              "infra": "terraform"
+            },
+            "metadata": {}
+          },
+          {
+            "name": "module.eks.aws_eks_addon.this[\"vpc-cni\"]",
+            "resourceType": "aws_eks_addon",
+            "tags": {
+              "LAB": "thesis",
+              "infra": "terraform"
+            },
+            "metadata": {}
+          },
+          {
+            "name": "module.eks.aws_iam_policy.cluster_encryption[0]",
+            "resourceType": "aws_iam_policy",
+            "tags": {
+              "LAB": "thesis",
+              "infra": "terraform"
+            },
+            "metadata": {}
+          },
+          {
+            "name": "module.eks.aws_iam_role.this[0]",
+            "resourceType": "aws_iam_role",
+            "tags": {
+              "LAB": "thesis",
+              "Name": "eks-lab-cluster-module-cluster",
+              "infra": "terraform"
+            },
+            "metadata": {}
+          },
+          {
+            "name": "module.eks.aws_security_group.cluster[0]",
+            "resourceType": "aws_security_group",
+            "tags": {
+              "LAB": "thesis",
+              "Name": "eks-lab-cluster-module-cluster",
+              "infra": "terraform"
+            },
+            "metadata": {}
+          },
+          {
+            "name": "module.eks.aws_security_group.node[0]",
+            "resourceType": "aws_security_group",
+            "tags": {
+              "LAB": "thesis",
+              "Name": "eks-lab-cluster-module-node",
+              "infra": "terraform",
+              "kubernetes.io/cluster/eks-lab-cluster-module": "owned"
+            },
+            "metadata": {}
+          },
+          {
+            "name": "module.eks.module.eks_managed_node_group[\"private-nodes\"].aws_iam_role.this[0]",
+            "resourceType": "aws_iam_role",
+            "tags": {
+              "LAB": "thesis",
+              "infra": "terraform"
+            },
+            "metadata": {}
+          },
+          {
+            "name": "module.eks.module.eks_managed_node_group[\"private-nodes\"].aws_launch_template.this[0]",
+            "resourceType": "aws_launch_template",
+            "tags": {
+              "LAB": "thesis",
+              "infra": "terraform",
+              "tag_specifications.LAB": "thesis",
+              "tag_specifications.Name": "private-nodes",
+              "tag_specifications.infra": "terraform"
+            },
+            "metadata": {}
+          },
+          {
+            "name": "module.vpc.aws_db_subnet_group.database[0]",
+            "resourceType": "aws_db_subnet_group",
+            "tags": {
+              "LAB": "thesis",
+              "Name": "rds-db",
+              "infra": "terraform"
+            },
+            "metadata": {}
+          },
+          {
+            "name": "module.vpc.aws_default_network_acl.this[0]",
+            "resourceType": "aws_default_network_acl",
+            "tags": {
+              "LAB": "thesis",
+              "Name": "-default",
+              "infra": "terraform"
+            },
+            "metadata": {}
+          },
+          {
+            "name": "module.vpc.aws_default_route_table.default[0]",
+            "resourceType": "aws_default_route_table",
+            "tags": {
+              "LAB": "thesis",
+              "Name": "-default",
+              "infra": "terraform"
+            },
+            "metadata": {}
+          },
+          {
+            "name": "module.vpc.aws_default_security_group.this[0]",
+            "resourceType": "aws_default_security_group",
+            "tags": {
+              "LAB": "thesis",
+              "Name": "eks-lab-vpc-module-default-sg",
+              "infra": "terraform"
+            },
+            "metadata": {}
+          },
+          {
+            "name": "module.vpc.aws_flow_log.this[0]",
+            "resourceType": "aws_flow_log",
+            "tags": {
+              "LAB": "thesis",
+              "infra": "terraform"
+            },
+            "metadata": {}
+          },
+          {
+            "name": "module.vpc.aws_iam_policy.vpc_flow_log_cloudwatch[0]",
+            "resourceType": "aws_iam_policy",
+            "tags": {
+              "LAB": "thesis",
+              "infra": "terraform"
+            },
+            "metadata": {}
+          },
+          {
+            "name": "module.vpc.aws_iam_role.vpc_flow_log_cloudwatch[0]",
+            "resourceType": "aws_iam_role",
+            "tags": {
+              "LAB": "thesis",
+              "infra": "terraform"
+            },
+            "metadata": {}
+          },
+          {
+            "name": "module.vpc.aws_route_table.private[0]",
+            "resourceType": "aws_route_table",
+            "tags": {
+              "LAB": "thesis",
+              "Name": "-private-eu-west-3a",
+              "infra": "terraform"
+            },
+            "metadata": {}
+          },
+          {
+            "name": "module.vpc.aws_route_table.private[1]",
+            "resourceType": "aws_route_table",
+            "tags": {
+              "LAB": "thesis",
+              "Name": "-private-eu-west-3b",
+              "infra": "terraform"
+            },
+            "metadata": {}
+          },
+          {
+            "name": "module.vpc.aws_subnet.database[0]",
+            "resourceType": "aws_subnet",
+            "tags": {
+              "LAB": "thesis",
+              "Name": "db-subnet-0",
+              "infra": "terraform"
+            },
+            "metadata": {}
+          },
+          {
+            "name": "module.vpc.aws_subnet.database[1]",
+            "resourceType": "aws_subnet",
+            "tags": {
+              "LAB": "thesis",
+              "Name": "db-subnet-1",
+              "infra": "terraform"
+            },
+            "metadata": {}
+          },
+          {
+            "name": "module.vpc.aws_subnet.private[0]",
+            "resourceType": "aws_subnet",
+            "tags": {
+              "LAB": "thesis",
+              "Name": "private-subnet-0",
+              "infra": "terraform",
+              "kubernetes.io/cluster/eks-lab-cluster-module": "owned"
+            },
+            "metadata": {}
+          },
+          {
+            "name": "module.vpc.aws_subnet.private[1]",
+            "resourceType": "aws_subnet",
+            "tags": {
+              "LAB": "thesis",
+              "Name": "private-subnet-1",
+              "infra": "terraform",
+              "kubernetes.io/cluster/eks-lab-cluster-module": "owned"
+            },
+            "metadata": {}
+          },
+          {
+            "name": "module.vpc.aws_vpc.this[0]",
+            "resourceType": "aws_vpc",
+            "tags": {
+              "LAB": "thesis",
+              "Name": "eks-lab-vpc-module",
+              "infra": "terraform",
+              "kubernetes.io/cluster/eks-lab-cluster-module": "owned"
+            },
+            "metadata": {}
+          },
+          {
+            "name": "module.vpc_vpc-endpoints.aws_vpc_endpoint.this[\"s3\"]",
+            "resourceType": "aws_vpc_endpoint",
+            "tags": {
+              "LAB": "thesis",
+              "Name": "s3",
+              "infra": "terraform"
+            },
+            "metadata": {}
+          }
+        ],
+        "totalHourlyCost": "0.2860753424657533332",
+        "totalMonthlyCost": "208.835"
+      },
+      "diff": {
+        "resources": [
+          {
+            "name": "aws_db_instance.rds_db[0]",
+            "resourceType": "aws_db_instance",
+            "tags": {
+              "LAB": "thesis",
+              "db_name": "rds_db",
+              "infra": "terraform"
+            },
+            "metadata": {},
+            "hourlyCost": "0.0482876712328767116",
+            "monthlyCost": "35.25",
+            "costComponents": [
+              {
+                "name": "Database instance (on-demand, Multi-AZ, db.t3.micro)",
+                "unit": "hours",
+                "hourlyQuantity": "1",
+                "monthlyQuantity": "730",
+                "price": "0.041",
+                "hourlyCost": "0.041",
+                "monthlyCost": "29.93"
+              },
+              {
+                "name": "Storage (general purpose SSD, gp2)",
+                "unit": "GB",
+                "hourlyQuantity": "0.0273972602739726",
+                "monthlyQuantity": "20",
+                "price": "0.266",
+                "hourlyCost": "0.0072876712328767116",
+                "monthlyCost": "5.32"
+              },
+              {
+                "name": "Additional backup storage",
+                "unit": "GB",
+                "hourlyQuantity": "0",
+                "monthlyQuantity": "0",
+                "price": "0.1",
+                "hourlyCost": "0",
+                "monthlyCost": "0"
+              },
+              {
+                "name": "Performance Insights API",
+                "unit": "1000 requests",
+                "hourlyQuantity": "0",
+                "monthlyQuantity": "0",
+                "price": "0.01",
+                "hourlyCost": "0",
+                "monthlyCost": "0"
+              }
+            ]
+          },
+          {
+            "name": "aws_kms_key.rds_performance_insights",
+            "resourceType": "aws_kms_key",
+            "tags": {},
+            "metadata": {},
+            "hourlyCost": "0.0013698630136986",
+            "monthlyCost": "1",
+            "costComponents": [
+              {
+                "name": "Customer master key",
+                "unit": "months",
+                "hourlyQuantity": "0.0013698630136986",
+                "monthlyQuantity": "1",
+                "price": "1",
+                "hourlyCost": "0.0013698630136986",
+                "monthlyCost": "1"
+              },
+              {
+                "name": "Requests",
+                "unit": "10k requests",
+                "hourlyQuantity": "0",
+                "monthlyQuantity": "0",
+                "price": "0.03",
+                "hourlyCost": "0",
+                "monthlyCost": "0"
+              },
+              {
+                "name": "ECC GenerateDataKeyPair requests",
+                "unit": "10k requests",
+                "hourlyQuantity": "0",
+                "monthlyQuantity": "0",
+                "price": "0.1",
+                "hourlyCost": "0",
+                "monthlyCost": "0"
+              },
+              {
+                "name": "RSA GenerateDataKeyPair requests",
+                "unit": "10k requests",
+                "hourlyQuantity": "0",
+                "monthlyQuantity": "0",
+                "price": "0.1",
+                "hourlyCost": "0",
+                "monthlyCost": "0"
+              }
+            ]
+          },
+          {
+            "name": "aws_kms_key.vpc_key",
+            "resourceType": "aws_kms_key",
+            "tags": {},
+            "metadata": {},
+            "hourlyCost": "0.0013698630136986",
+            "monthlyCost": "1",
+            "costComponents": [
+              {
+                "name": "Customer master key",
+                "unit": "months",
+                "hourlyQuantity": "0.0013698630136986",
+                "monthlyQuantity": "1",
+                "price": "1",
+                "hourlyCost": "0.0013698630136986",
+                "monthlyCost": "1"
+              },
+              {
+                "name": "Requests",
+                "unit": "10k requests",
+                "hourlyQuantity": "0",
+                "monthlyQuantity": "0",
+                "price": "0.03",
+                "hourlyCost": "0",
+                "monthlyCost": "0"
+              },
+              {
+                "name": "ECC GenerateDataKeyPair requests",
+                "unit": "10k requests",
+                "hourlyQuantity": "0",
+                "monthlyQuantity": "0",
+                "price": "0.1",
+                "hourlyCost": "0",
+                "monthlyCost": "0"
+              },
+              {
+                "name": "RSA GenerateDataKeyPair requests",
+                "unit": "10k requests",
+                "hourlyQuantity": "0",
+                "monthlyQuantity": "0",
+                "price": "0.1",
+                "hourlyCost": "0",
+                "monthlyCost": "0"
+              }
+            ]
+          },
+          {
+            "name": "module.eks.aws_eks_cluster.this[0]",
+            "resourceType": "aws_eks_cluster",
+            "tags": {
+              "LAB": "thesis",
+              "infra": "terraform"
+            },
+            "metadata": {},
+            "hourlyCost": "0.1",
+            "monthlyCost": "73",
+            "costComponents": [
+              {
+                "name": "EKS cluster",
+                "unit": "hours",
+                "hourlyQuantity": "1",
+                "monthlyQuantity": "730",
+                "price": "0.1",
+                "hourlyCost": "0.1",
+                "monthlyCost": "73"
+              }
+            ]
+          },
+          {
+            "name": "module.eks.module.eks_managed_node_group[\"private-nodes\"].aws_eks_node_group.this[0]",
+            "resourceType": "aws_eks_node_group",
+            "tags": {
+              "LAB": "thesis",
+              "Name": "private-nodes",
+              "infra": "terraform"
+            },
+            "metadata": {},
+            "hourlyCost": "0.0456780821917808216",
+            "monthlyCost": "33.345",
+            "costComponents": [
+              {
+                "name": "Instance usage (Linux/UNIX, on-demand, t3a.medium)",
+                "unit": "hours",
+                "hourlyQuantity": "1",
+                "monthlyQuantity": "730",
+                "price": "0.0425",
+                "hourlyCost": "0.0425",
+                "monthlyCost": "31.025"
+              },
+              {
+                "name": "Storage (general purpose SSD, gp2)",
+                "unit": "GB",
+                "hourlyQuantity": "0.0273972602739726",
+                "monthlyQuantity": "20",
+                "price": "0.116",
+                "hourlyCost": "0.0031780821917808216",
+                "monthlyCost": "2.32"
+              }
+            ]
+          },
+          {
+            "name": "module.eks.module.kms.aws_kms_key.this[0]",
+            "resourceType": "aws_kms_key",
+            "tags": {
+              "LAB": "thesis",
+              "infra": "terraform"
+            },
+            "metadata": {},
+            "hourlyCost": "0.0013698630136986",
+            "monthlyCost": "1",
+            "costComponents": [
+              {
+                "name": "Customer master key",
+                "unit": "months",
+                "hourlyQuantity": "0.0013698630136986",
+                "monthlyQuantity": "1",
+                "price": "1",
+                "hourlyCost": "0.0013698630136986",
+                "monthlyCost": "1"
+              },
+              {
+                "name": "Requests",
+                "unit": "10k requests",
+                "hourlyQuantity": "0",
+                "monthlyQuantity": "0",
+                "price": "0.03",
+                "hourlyCost": "0",
+                "monthlyCost": "0"
+              },
+              {
+                "name": "ECC GenerateDataKeyPair requests",
+                "unit": "10k requests",
+                "hourlyQuantity": "0",
+                "monthlyQuantity": "0",
+                "price": "0.1",
+                "hourlyCost": "0",
+                "monthlyCost": "0"
+              },
+              {
+                "name": "RSA GenerateDataKeyPair requests",
+                "unit": "10k requests",
+                "hourlyQuantity": "0",
+                "monthlyQuantity": "0",
+                "price": "0.1",
+                "hourlyCost": "0",
+                "monthlyCost": "0"
+              }
+            ]
+          },
+          {
+            "name": "module.vpc.aws_cloudwatch_log_group.flow_log[0]",
+            "resourceType": "aws_cloudwatch_log_group",
+            "tags": {
+              "LAB": "thesis",
+              "infra": "terraform"
+            },
+            "metadata": {},
+            "hourlyCost": "0",
+            "monthlyCost": "0",
+            "costComponents": [
+              {
+                "name": "Data ingested",
+                "unit": "GB",
+                "hourlyQuantity": "0",
+                "monthlyQuantity": "0",
+                "price": "0.5985",
+                "hourlyCost": "0",
+                "monthlyCost": "0"
+              },
+              {
+                "name": "Archival Storage",
+                "unit": "GB",
+                "hourlyQuantity": "0",
+                "monthlyQuantity": "0",
+                "price": "0.0315",
+                "hourlyCost": "0",
+                "monthlyCost": "0"
+              },
+              {
+                "name": "Insights queries data scanned",
+                "unit": "GB",
+                "hourlyQuantity": "0",
+                "monthlyQuantity": "0",
+                "price": "0.0059",
+                "hourlyCost": "0",
+                "monthlyCost": "0"
+              }
+            ]
+          },
+          {
+            "name": "module.vpc_vpc-endpoints.aws_vpc_endpoint.this[\"cloudwatch\"]",
+            "resourceType": "aws_vpc_endpoint",
+            "tags": {
+              "LAB": "thesis",
+              "Name": "logs",
+              "infra": "terraform"
+            },
+            "metadata": {},
+            "hourlyCost": "0.011",
+            "monthlyCost": "8.03",
+            "costComponents": [
+              {
+                "name": "Data processed (first 1PB)",
+                "unit": "GB",
+                "hourlyQuantity": "0",
+                "monthlyQuantity": "0",
+                "price": "0.01",
+                "hourlyCost": "0",
+                "monthlyCost": "0"
+              },
+              {
+                "name": "Endpoint (Interface)",
+                "unit": "hours",
+                "hourlyQuantity": "1",
+                "monthlyQuantity": "730",
+                "price": "0.011",
+                "hourlyCost": "0.011",
+                "monthlyCost": "8.03"
+              }
+            ]
+          },
+          {
+            "name": "module.vpc_vpc-endpoints.aws_vpc_endpoint.this[\"ec2\"]",
+            "resourceType": "aws_vpc_endpoint",
+            "tags": {
+              "LAB": "thesis",
+              "Name": "ec2",
+              "infra": "terraform"
+            },
+            "metadata": {},
+            "hourlyCost": "0.011",
+            "monthlyCost": "8.03",
+            "costComponents": [
+              {
+                "name": "Data processed (first 1PB)",
+                "unit": "GB",
+                "hourlyQuantity": "0",
+                "monthlyQuantity": "0",
+                "price": "0.01",
+                "hourlyCost": "0",
+                "monthlyCost": "0"
+              },
+              {
+                "name": "Endpoint (Interface)",
+                "unit": "hours",
+                "hourlyQuantity": "1",
+                "monthlyQuantity": "730",
+                "price": "0.011",
+                "hourlyCost": "0.011",
+                "monthlyCost": "8.03"
+              }
+            ]
+          },
+          {
+            "name": "module.vpc_vpc-endpoints.aws_vpc_endpoint.this[\"ec2messages\"]",
+            "resourceType": "aws_vpc_endpoint",
+            "tags": {
+              "LAB": "thesis",
+              "Name": "ec2messages",
+              "infra": "terraform"
+            },
+            "metadata": {},
+            "hourlyCost": "0.011",
+            "monthlyCost": "8.03",
+            "costComponents": [
+              {
+                "name": "Data processed (first 1PB)",
+                "unit": "GB",
+                "hourlyQuantity": "0",
+                "monthlyQuantity": "0",
+                "price": "0.01",
+                "hourlyCost": "0",
+                "monthlyCost": "0"
+              },
+              {
+                "name": "Endpoint (Interface)",
+                "unit": "hours",
+                "hourlyQuantity": "1",
+                "monthlyQuantity": "730",
+                "price": "0.011",
+                "hourlyCost": "0.011",
+                "monthlyCost": "8.03"
+              }
+            ]
+          },
+          {
+            "name": "module.vpc_vpc-endpoints.aws_vpc_endpoint.this[\"ecr_api\"]",
+            "resourceType": "aws_vpc_endpoint",
+            "tags": {
+              "LAB": "thesis",
+              "Name": "ecr_api",
+              "infra": "terraform"
+            },
+            "metadata": {},
+            "hourlyCost": "0.011",
+            "monthlyCost": "8.03",
+            "costComponents": [
+              {
+                "name": "Data processed (first 1PB)",
+                "unit": "GB",
+                "hourlyQuantity": "0",
+                "monthlyQuantity": "0",
+                "price": "0.01",
+                "hourlyCost": "0",
+                "monthlyCost": "0"
+              },
+              {
+                "name": "Endpoint (Interface)",
+                "unit": "hours",
+                "hourlyQuantity": "1",
+                "monthlyQuantity": "730",
+                "price": "0.011",
+                "hourlyCost": "0.011",
+                "monthlyCost": "8.03"
+              }
+            ]
+          },
+          {
+            "name": "module.vpc_vpc-endpoints.aws_vpc_endpoint.this[\"ecr_dkr\"]",
+            "resourceType": "aws_vpc_endpoint",
+            "tags": {
+              "LAB": "thesis",
+              "Name": "ecr_dkr",
+              "infra": "terraform"
+            },
+            "metadata": {},
+            "hourlyCost": "0.011",
+            "monthlyCost": "8.03",
+            "costComponents": [
+              {
+                "name": "Data processed (first 1PB)",
+                "unit": "GB",
+                "hourlyQuantity": "0",
+                "monthlyQuantity": "0",
+                "price": "0.01",
+                "hourlyCost": "0",
+                "monthlyCost": "0"
+              },
+              {
+                "name": "Endpoint (Interface)",
+                "unit": "hours",
+                "hourlyQuantity": "1",
+                "monthlyQuantity": "730",
+                "price": "0.011",
+                "hourlyCost": "0.011",
+                "monthlyCost": "8.03"
+              }
+            ]
+          },
+          {
+            "name": "module.vpc_vpc-endpoints.aws_vpc_endpoint.this[\"ssm\"]",
+            "resourceType": "aws_vpc_endpoint",
+            "tags": {
+              "LAB": "thesis",
+              "Name": "ssm",
+              "infra": "terraform"
+            },
+            "metadata": {},
+            "hourlyCost": "0.011",
+            "monthlyCost": "8.03",
+            "costComponents": [
+              {
+                "name": "Data processed (first 1PB)",
+                "unit": "GB",
+                "hourlyQuantity": "0",
+                "monthlyQuantity": "0",
+                "price": "0.01",
+                "hourlyCost": "0",
+                "monthlyCost": "0"
+              },
+              {
+                "name": "Endpoint (Interface)",
+                "unit": "hours",
+                "hourlyQuantity": "1",
+                "monthlyQuantity": "730",
+                "price": "0.011",
+                "hourlyCost": "0.011",
+                "monthlyCost": "8.03"
+              }
+            ]
+          },
+          {
+            "name": "module.vpc_vpc-endpoints.aws_vpc_endpoint.this[\"ssmmessages\"]",
+            "resourceType": "aws_vpc_endpoint",
+            "tags": {
+              "LAB": "thesis",
+              "Name": "ssmmessages",
+              "infra": "terraform"
+            },
+            "metadata": {},
+            "hourlyCost": "0.011",
+            "monthlyCost": "8.03",
+            "costComponents": [
+              {
+                "name": "Data processed (first 1PB)",
+                "unit": "GB",
+                "hourlyQuantity": "0",
+                "monthlyQuantity": "0",
+                "price": "0.01",
+                "hourlyCost": "0",
+                "monthlyCost": "0"
+              },
+              {
+                "name": "Endpoint (Interface)",
+                "unit": "hours",
+                "hourlyQuantity": "1",
+                "monthlyQuantity": "730",
+                "price": "0.011",
+                "hourlyCost": "0.011",
+                "monthlyCost": "8.03"
+              }
+            ]
+          },
+          {
+            "name": "module.vpc_vpc-endpoints.aws_vpc_endpoint.this[\"sts\"]",
+            "resourceType": "aws_vpc_endpoint",
+            "tags": {
+              "LAB": "thesis",
+              "Name": "sts",
+              "infra": "terraform"
+            },
+            "metadata": {},
+            "hourlyCost": "0.011",
+            "monthlyCost": "8.03",
+            "costComponents": [
+              {
+                "name": "Data processed (first 1PB)",
+                "unit": "GB",
+                "hourlyQuantity": "0",
+                "monthlyQuantity": "0",
+                "price": "0.01",
+                "hourlyCost": "0",
+                "monthlyCost": "0"
+              },
+              {
+                "name": "Endpoint (Interface)",
+                "unit": "hours",
+                "hourlyQuantity": "1",
+                "monthlyQuantity": "730",
+                "price": "0.011",
+                "hourlyCost": "0.011",
+                "monthlyCost": "8.03"
+              }
+            ]
+          }
+        ],
+        "totalHourlyCost": "0.2860753424657533332",
+        "totalMonthlyCost": "208.835"
+      },
+      "summary": {
+        "totalDetectedResources": 67,
+        "totalSupportedResources": 15,
+        "totalUnsupportedResources": 0,
+        "totalUsageBasedResources": 11,
+        "totalNoPriceResources": 52,
+        "unsupportedResourceCounts": {},
+        "noPriceResourceCounts": {
+          "aws_db_subnet_group": 1,
+          "aws_default_network_acl": 1,
+          "aws_default_route_table": 1,
+          "aws_default_security_group": 1,
+          "aws_ec2_tag": 2,
+          "aws_eks_addon": 1,
+          "aws_flow_log": 1,
+          "aws_iam_policy": 2,
+          "aws_iam_role": 3,
+          "aws_iam_role_policy_attachment": 8,
+          "aws_kms_alias": 1,
+          "aws_launch_template": 1,
+          "aws_route_table": 2,
+          "aws_route_table_association": 4,
+          "aws_security_group": 4,
+          "aws_security_group_rule": 13,
+          "aws_subnet": 4,
+          "aws_vpc": 1,
+          "aws_vpc_endpoint": 1
+        }
+      }
+    }
+  ],
+  "totalHourlyCost": "0.2860753424657533332",
+  "totalMonthlyCost": "208.835",
+  "pastTotalHourlyCost": "0",
+  "pastTotalMonthlyCost": "0",
+  "diffTotalHourlyCost": "0.2860753424657533332",
+  "diffTotalMonthlyCost": "208.835",
+  "timeGenerated": "2023-11-03T15:32:27.165706804Z",
+  "summary": {
+    "totalDetectedResources": 67,
+    "totalSupportedResources": 15,
+    "totalUnsupportedResources": 0,
+    "totalUsageBasedResources": 11,
+    "totalNoPriceResources": 52,
+    "unsupportedResourceCounts": {},
+    "noPriceResourceCounts": {
+      "aws_db_subnet_group": 1,
+      "aws_default_network_acl": 1,
+      "aws_default_route_table": 1,
+      "aws_default_security_group": 1,
+      "aws_ec2_tag": 2,
+      "aws_eks_addon": 1,
+      "aws_flow_log": 1,
+      "aws_iam_policy": 2,
+      "aws_iam_role": 3,
+      "aws_iam_role_policy_attachment": 8,
+      "aws_kms_alias": 1,
+      "aws_launch_template": 1,
+      "aws_route_table": 2,
+      "aws_route_table_association": 4,
+      "aws_security_group": 4,
+      "aws_security_group_rule": 13,
+      "aws_subnet": 4,
+      "aws_vpc": 1,
+      "aws_vpc_endpoint": 1
+    }
+  }
+}

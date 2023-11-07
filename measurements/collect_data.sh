@@ -13,6 +13,8 @@ show_help() {
   echo "  --container-name   Name of the Docker container to use. Default: jenkins-blueocean"
   echo "  --run-locally      If set, script runs locally instead of connecting to dockerized Jenkins."
   echo "  --output-file      Name of the merged output CSV file. Default: merged_measurements.csv"
+  echo "  --get-breakdown    If set, retrieves the breakdown file from the first build directory."
+  echo "  --breakdown-file   Name of the breakdown file to retrieve. Setting this automatically turns on --get-breakdown. Default: infracost.json"
   echo ""
 }
 
@@ -24,6 +26,8 @@ CSV_FILE="measurements.csv"
 OUTPUT_FILE="merged_measurements.csv"
 CONTAINER_NAME="jenkins-blueocean"
 RUN_LOCALLY=false
+BREAKDOWN_FILE="infracost.json"
+GET_BREAKDOWN=false
 
 # Parse arguments
 while [ "$#" -gt 0 ]; do
@@ -55,6 +59,15 @@ while [ "$#" -gt 0 ]; do
         --run-locally)
             RUN_LOCALLY=true
             shift
+            ;;
+        --get-breakdown)
+            GET_BREAKDOWN=true
+            shift
+            ;;
+        --breakdown-file)
+            BREAKDOWN_FILE="$2"
+            GET_BREAKDOWN=true
+            shift 2
             ;;
         *)
             echo "Unknown option: $1"
@@ -173,6 +186,30 @@ merge_csv_files() {
     echo "$file_content" >> "$output_file"
 }
 
+# Get and rename the BREAKDOWN_FILE if --get-breakdown is set
+if [[ "$GET_BREAKDOWN" = true ]]; then
+    # Assuming breakdown file is in the first build directory
+    first_build_dir="${dirs[0]}"
+    original_path="$BUILDS_PATH/$first_build_dir/archive/$BREAKDOWN_FILE"
+    file_ending="${BREAKDOWN_FILE##*.}" # Extracts file extension
+    renamed_file="${BREAKDOWN_FILE%.*}_build_$first_build_dir.$file_ending"
+    
+    if [[ "$RUN_LOCALLY" = true ]]; then
+        if [[ ! -f "$original_path" ]]; then
+            echo "Breakdown file not found: $original_path"
+        else
+            cp "$original_path" "$renamed_file"
+        fi
+    else
+        # Check if the file exists inside the container first.
+        if docker exec "$CONTAINER_NAME" bash -c "[[ -f $original_path ]]"; then
+            # Copy the file from the container to the host system.
+            docker cp "$CONTAINER_NAME:$original_path" "$renamed_file"
+        else
+            echo 'Breakdown file not found in Docker container'
+        fi
+    fi
+fi
 
 # Merge CSVs
 for dir in "${dirs[@]}"; do

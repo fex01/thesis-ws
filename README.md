@@ -1,5 +1,7 @@
 # Quantitative Cost Assessment of IaC Testing: PoC Workspace
 
+[[TOC]]
+
 ## Overview
 
 This repository serves as a supporting workspace for the proof-of-concept (PoC) implementation related to the Master Thesis titled "Quantitative Cost Assessment of IaC Testing".
@@ -67,6 +69,73 @@ This separation allows for streamlined testing, as the test pipeline can directl
 
 For more information on the specifics of the submodule, please refer to its [README](./terraform/README.md).
 
+## Data Collection
+
+The data collection process for the "Quantitative Cost Assessment of IaC Testing" PoC is methodically embedded within the test pipeline. Each execution of the pipeline is designed to capture detailed metrics regarding test runtimes and associated costs.
+
+### Test Execution and Data Capture
+
+The pipeline is configured to execute tests individually or in groups, gathering data for each run. Individual test executions are performed using:
+
+```groovy
+// /terraform/Jenkinsfile
+...
+steps {
+    sh """scripts/run_test.sh \\
+        --build-number ${BUILD_NUMBER} \\
+        --defect-category ${DEFECT_CATEGORY} \\
+        --test-approach ${TEST_APPROACH} \\
+        --test-command '${TEST_COMMAND}' \\
+        --csv-file ${CSV_FILE}"""
+}
+...
+```
+
+For grouped tests, the following command is used:
+
+```groovy
+// /terraform/Jenkinsfile
+...
+steps {
+    sh """scripts/run_grouped_tests.sh \\
+        --build-number ${BUILD_NUMBER} \\
+        --test-folder ${TEST_FOLDER} \\
+        --test-tool '${TEST_TOOL}' \\
+        --test-command '${TEST_COMMAND}' \\
+        --csv-file ${CSV_FILE}"""
+}
+...
+```
+
+### Script Location
+
+All scripts related to the test runs are located in the `/terraform/scripts/` directory within the repository.
+
+### Metrics Collection
+
+The collected metrics for each test include the build number, defect category, test case, test approach, test tool, and runtime in seconds. Furthermore, the cost associated with each test is calculated and appended to the data. This calculation accounts for the billing modalities of different resources and is based on the test runtime and an Infracost breakdown of resource prices. The cost calculation script can be found at [calculate_costs.py](/terraform/scripts/calculate_costs.py).
+
+### Artifacts and Reports
+
+The CSV file containing the measurements, along with the corresponding Infracost breakdown report, is saved as an artifact for each test pipeline build. These artifacts are retrievable via the Jenkins Job Portal, allowing for in-depth analysis of the collected data.
+
+### Data Aggregation, Analysis, and Transparency
+
+To assist with the aggregation and analysis of data across multiple builds, a [helper script](/measurements/collect_data.sh) is available. This script is designed to collect and merge data, which can be executed on the local Jenkins server or from the Docker host when employing our [dockerized Jenkins setup](/jenkins/README.md#setup-dockerized-jenkins). 
+Importantly, the repository contains the raw data and measurements that have been discussed in the thesis. This [dataset](/measurements/merged_measurements.csv), which underpins our scholarly discussion, is made available for review. By hosting this data publicly, we aim to foster transparency and provide a basis for peer validation of our research findings.
+
+The provision of this data reflects our commitment to a meticulous approach to data collection, ensuring that our assessment of the costs associated with IaC testing is both robust and verifiable.
+
+To facilitate the aggregation and analysis of data across multiple builds, a [helper script](/measurements/collect_data.sh) is provided.
+This script, which can be executed on the local Jenkins server or from the Docker host when using our [dockerized Jenkins setup](/jenkins/README.md#setup-dockerized-jenkins), is designed to systematically collect and merge data into a cohesive dataset.
+
+The repository includes the raw data that is the foundation of the analysis presented in the thesis.
+In addition, the specific [Infracost breakdown report](/measurements/infracost_build_1.json) used to calculate the costs for these measurements is also provided.
+This [dataset](/measurements/merged_measurements.csv) is openly shared to promote transparency and to enable peer validation of our research findings.
+The availability of the raw data along with the cost calculations ensures full traceability, allowing others to understand and verify the data-driven conclusions that support our thesis.
+
+By making this information publicly accessible, we underscore our commitment to an exhaustive and transparent approach to data collection, bolstering the reliability and reproducibility of our work on the costs associated with IaC testing.
+
 ## Cleanup
 
 During the course of extended testing or in the event of partial failures of `terraform destroy`, there may be residual AWS resources that are not properly removed. To address this, we have employed the use of [cloud-nuke](https://github.com/gruntwork-io/cloud-nuke) throughout the implementation phase. 
@@ -91,7 +160,6 @@ If you are utilizing our custom Dockerfile for Jenkins, then `cloud-nuke` comes 
 The `cloud-nuke` exemption configuration file, located at [terraform/cloud-nuke.yaml](/terraform/cloud-nuke.yaml), is instrumental for safeguarding essential resources during both automated pipeline cleanup and manual `cloud-nuke` executions. Specifically, the account credentials used for deployment should be included in this exemption list. In our particular setup, these credentials are associated with an account named `admin`. If your deployment uses a different account name, it is imperative to update this configuration file accordingly to prevent unintentional deletions.
 
 Whether you are running the "Nuke" stage in the test pipeline or executing `cloud-nuke` manually, this exemption configuration ensures a more secure cleanup process, minimizing the risk of accidental resource removal.
-
 
 ## Account Creation
 

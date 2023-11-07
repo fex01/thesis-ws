@@ -1,13 +1,30 @@
 # Quantitative Cost Assessment of IaC Testing: PoC Workspace
 
-[[TOC]]
-
-## Overview
-
 This repository serves as a supporting workspace for the proof-of-concept (PoC) implementation related to the Master Thesis titled "Quantitative Cost Assessment of IaC Testing".
 While the actual PoC is encapsulated within a submodule, this repository contains the essential guides and tooling required to set up and run the PoC.
 
 This separation is done to facilitate streamlined testing, as the test pipeline can directly check out only the executable code - see [Submodule thesis-tf](#submodule-thesis-tf) for more information.
+
+## Table of Contents
+
+- [Devcontainer](#devcontainer): Optional setup for a standardized development environment supporting the PoC.
+  - [Devcontainer Prerequisites](#devcontainer-prerequisites)
+  - [Devcontainer Configuration](#devcontainer-configuration)
+  - [Running the Devcontainer](#running-the-devcontainer)
+- [Test Pipeline](#test-pipeline): Instructions for executing the test pipeline with the provided Jenkinsfile.
+- [Submodule thesis-tf](#submodule-thesis-tf): The core elements of the PoC including Terraform configurations and test implementations.
+- [Data Collection](#data-collection): The approach for collecting test metrics and cost data within the test pipeline.
+  - [Test Execution and Data Capture](#test-execution-and-data-capture)
+  - [Metrics Collection](#metrics-collection)
+  - [Artifacts and Reports](#artifacts-and-reports)
+  - [Data Aggregation, Analysis, and Transparency](#data-aggregation-analysis-and-transparency)
+- [Cleanup](#cleanup): Guidelines for using `cloud-nuke` to clean up AWS resources post-testing.
+  - [Additional Cleanup Feature: The "Nuke" Stage in Test Pipeline](#additional-cleanup-feature-the-nuke-stage-in-test-pipeline)
+  - [Cloud-Nuke Exemption Configuration](#cloud-nuke-exemption-configuration)
+- [Account Creation](#account-creation): Steps for setting up necessary accounts for using the PoC.
+  - [AWS](#aws)
+  - [AWS Host Configuration Integration](#aws-host-configuration-integration)
+- [Infracost](#infracost): TODO
 
 ## Devcontainer
 
@@ -107,9 +124,22 @@ steps {
 ...
 ```
 
-### Script Location
+Each build within the test pipeline generates a new Infracost breakdown report for the resources scheduled for deployment. Subsequently, the costs for each test are calculated and added to measured data:
 
-All scripts related to the test runs are located in the `/terraform/scripts/` directory within the repository.
+```groovy
+// /terraform/Jenkinsfile
+...
+steps {
+    sh """scripts/extend_measurements_with_costs.py \\
+        --infracost-json ${INFRACOST_JSON} \\
+        --measurements-csv ${CSV_FILE}"""
+}
+...
+```
+
+This process ensures that the resulting dataset includes not only the performance metrics of the tests but also a financial dimension, reflecting the cost implications of the deployed infrastructure.
+
+All scripts related to the test runs are located in the [`/terraform/scripts/`](/terraform/scripts/) directory within the repository.
 
 ### Metrics Collection
 
@@ -122,12 +152,6 @@ The CSV file containing the measurements, along with the corresponding Infracost
 ### Data Aggregation, Analysis, and Transparency
 
 To assist with the aggregation and analysis of data across multiple builds, a [helper script](/measurements/collect_data.sh) is available. This script is designed to collect and merge data, which can be executed on the local Jenkins server or from the Docker host when employing our [dockerized Jenkins setup](/jenkins/README.md#setup-dockerized-jenkins). 
-Importantly, the repository contains the raw data and measurements that have been discussed in the thesis. This [dataset](/measurements/merged_measurements.csv), which underpins our scholarly discussion, is made available for review. By hosting this data publicly, we aim to foster transparency and provide a basis for peer validation of our research findings.
-
-The provision of this data reflects our commitment to a meticulous approach to data collection, ensuring that our assessment of the costs associated with IaC testing is both robust and verifiable.
-
-To facilitate the aggregation and analysis of data across multiple builds, a [helper script](/measurements/collect_data.sh) is provided.
-This script, which can be executed on the local Jenkins server or from the Docker host when using our [dockerized Jenkins setup](/jenkins/README.md#setup-dockerized-jenkins), is designed to systematically collect and merge data into a cohesive dataset.
 
 The repository includes the raw data that is the foundation of the analysis presented in the thesis.
 In addition, the specific [Infracost breakdown report](/measurements/infracost_build_1.json) used to calculate the costs for these measurements is also provided.

@@ -29,7 +29,7 @@ docker run --name jenkins-docker --rm --detach --privileged --network jenkins --
 Build a custom Jenkins image tailored for this project:
 
 ```bash
-docker build . -f jenkins/DOCKERFILE -t myjenkins-blueocean:2.427-1
+docker build jenkins/ -f DOCKERFILE -t myjenkins-blueocean:2.427-1
 ```
 
 ### Run Jenkins Container
@@ -112,3 +112,29 @@ Click `Save`.
 
 This concludes the Jenkins setup and configuration guide for this project's test pipeline.
 For further details on creating a pipeline, consult the [SCM Pipeline Documentation](https://www.jenkins.io/doc/book/pipeline/getting-started/#in-scm).
+
+## Automated Build Triggering
+
+Builds can be manually initiated via the Jenkins Dashboard, which provides a user-friendly interface for pipeline management.
+For automated and sequential build triggering, particularly in a test environment, this repository includes a custom script named [trigger_builds.sh](/jenkins/trigger_builds.sh).
+
+Its primary function is to automate the triggering of multiple builds in sequence.
+The script triggers `cloud-nuke`, a powerful tool that can **delete all resources across your AWS account**; hence, its use outside of a test environment is strongly discouraged.
+
+### Precautions and Usage
+
+Before running the script, ensure that it is safe to do so in your current environment. The script expects the Jenkins CLI `.jar` to be present in the same directory; if not found, it attempts to download it, ensuring that the necessary CLI tool is available for triggering the builds.
+
+The `trigger_builds.sh` script supports the following options for customization:
+
+- `--jenkins-url`: Specify the Jenkins server URL. Default is `http://localhost:8080/`.
+- `--job-name`: Define the name of the Jenkins job to build. Default is `thesis`.
+- `--num-builds`: Set the number of builds to trigger. Default is 10.
+- `--username`: Provide the Jenkins username for authentication.
+- `--token`: Supply the Jenkins API token or user password for authentication.
+
+This automated process allows for the efficient execution of multiple test runs, each of which can be monitored and managed via the Jenkins Dashboard.
+
+### Custom Docker Image Consideration
+
+When using our custom Dockerfile for Jenkins, the `trigger_builds.sh` script comes pre-copied to the appropriate directory. This setup is part of our effort to streamline the testing process, providing a ready-to-use environment for executing the test pipeline.

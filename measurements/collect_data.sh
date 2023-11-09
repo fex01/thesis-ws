@@ -15,6 +15,7 @@ show_help() {
   echo "  --output-file      Name of the merged output CSV file. Default: merged_measurements.csv"
   echo "  --get-breakdown    If set, retrieves the breakdown file from the first build directory."
   echo "  --breakdown-file   Name of the breakdown file to retrieve. Setting this automatically turns on --get-breakdown. Default: infracost.json"
+  echo "  --valid-entries    Number of valid entries expected in the CSV file. Default: 18"
   echo ""
 }
 
@@ -28,6 +29,7 @@ CONTAINER_NAME="jenkins-blueocean"
 RUN_LOCALLY=false
 BREAKDOWN_FILE="infracost.json"
 GET_BREAKDOWN=false
+VALIDE_NUMBER_OF_ENTRIES=18
 
 # Parse arguments
 while [ "$#" -gt 0 ]; do
@@ -67,6 +69,10 @@ while [ "$#" -gt 0 ]; do
         --breakdown-file)
             BREAKDOWN_FILE="$2"
             GET_BREAKDOWN=true
+            shift 2
+            ;;
+        --valid-entries)
+            VALID_NUMBER_OF_ENTRIES="$2"
             shift 2
             ;;
         *)
@@ -144,11 +150,6 @@ merge_csv_files() {
         current_header=$(head -n 1 "$file_path" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
         file_content=$(tail -n +2 "$file_path")
     else
-        if [[ -z "$CONTAINER_NAME" ]]; then
-            echo "Error: Container name must be provided if not running locally."
-            exit 1
-        fi
-
         current_header=$(docker exec "$CONTAINER_NAME" bash -c \
           "if [[ -f $file_path ]]; then \
               head -n 1 $file_path; \
@@ -180,6 +181,13 @@ merge_csv_files() {
     # Check if the output_file contains a line starting with the current build number
     if grep -q "^$current_build_number," "$output_file"; then
         echo "Build number $current_build_number has already been merged. Skipping..."
+        return
+    fi
+
+    # Validate the number of entries to skip unsuccessful builds
+    entry_count=$(grep -c '^' <<<"$file_content")
+    if [[ "$entry_count" -ne $VALID_NUMBER_OF_ENTRIES ]]; then
+        echo "Build number $current_build_number has $entry_count entries, expected $VALID_NUMBER_OF_ENTRIES. Skipping..."
         return
     fi
 

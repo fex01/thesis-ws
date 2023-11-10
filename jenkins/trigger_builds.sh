@@ -88,7 +88,7 @@ do
     echo "Starting build $i/$NUM_BUILDS of $JOB_NAME with parameters dynamic_testing=true, nuke=true"
     
     # Trigger the build with parameters and wait for its completion
-    java -jar jenkins-cli.jar -s "$JENKINS_URL" $AUTH_CMD_PART build "$JOB_NAME" -s -w -p dynamic_testing=true -p nuke=true
+    java -jar jenkins-cli.jar -s "$JENKINS_URL" $AUTH_CMD_PART build "$JOB_NAME" -f -w -p dynamic_testing=true -p nuke=true
     
     if [[ $? -ne 0 ]]; then
         echo "Error occurred during the triggering of build $i."

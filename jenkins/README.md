@@ -5,8 +5,11 @@ Should you already possess an active Jenkins installation, the [Configuration](#
 
 ## Setup: Dockerized Jenkins
 
-The following section is only applicable if you have not yet installed Jenkins and wish to use a dockerized instance.
-For a more comprehensive installation guide, consult the [Jenkins Handbook](https://www.jenkins.io/doc/book/installing/docker/).
+This section guides you through setting up a dockerized Jenkins instance, particularly useful if you haven't already installed Jenkins.
+
+Our Jenkins pipeline employs Docker-in-Docker for agents, ensuring isolation and reproducibility. When using this setup alongside the DevContainer, run the Jenkins container parallel to the DevContainer to avoid nested Docker environments.
+
+Additionally, ensure that the execution context for all operations is the project's root folder. For a detailed installation guide, refer to the [Jenkins Handbook](https://www.jenkins.io/doc/book/installing/docker/).
 
 ### Initialize Docker Network
 
@@ -29,7 +32,7 @@ docker run --name jenkins-docker --rm --detach --privileged --network jenkins --
 Build a custom Jenkins image tailored for this project:
 
 ```bash
-docker build jenkins/ -f DOCKERFILE -t myjenkins-blueocean:2.427-1
+docker build jenkins/ -f jenkins/DOCKERFILE -t myjenkins-blueocean:2.427-1
 ```
 
 ### Run Jenkins Container
@@ -76,7 +79,7 @@ Select `System -> Global credentials (unrestricted)`.
 
 #### AWS Credentials
 
-If you do not possess AWS credentials, please refer to the [AWS README](/.aws/README.md) for guidance on obtaining the necessary access keys.
+If you do not possess AWS credentials, please refer to the [Main Readme](/README.md#aws) for guidance on obtaining the necessary access keys.
 Once you have acquired your credentials, proceed with the following steps to add them:
 
 - Kind: `Username with password`
@@ -97,6 +100,17 @@ Add RDS credentials:
 - ID: `terraform-db-credentials`
 - Click `Create`
 
+#### Infracost Credentials
+
+If you do not possess Infracost credentials, please refer to the [Main Readme](/README.md#infracost) for guidance on obtaining the necessary api key.
+Once you have acquired your credentials, proceed with the following steps to add them:
+
+- Kind: `Secret text`
+- Scope: `Global`
+- Secret: `<your infracost api key>`
+- ID: `jenkins-infracost-api-key`
+- Click `Create`
+
 ### Create Pipeline
 
 To create a new pipeline, navigate to `Dashboard -> New Item`.
@@ -106,6 +120,7 @@ Scroll to the `Pipeline` section:
 - Choose `Pipeline script from SCM` from the `Definition` dropdown.
 - SCM: `Git`
 - Repository URL: `https://github.com/fex01/thesis-tf.git`
+- Ignore field Credentials as the repo is public and does not require authentication.
 - **Change** Branch Specifier to `*/main`, as new GitHub repositories use `main` instead of `master`.
 
 Click `Save`.

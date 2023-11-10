@@ -223,4 +223,14 @@ Should you prefer to use your host machine's AWS configuration, the `.devcontain
 
 ### Infracost
 
-TODO
+Infracost, the chosen cost estimation tool for our test pipeline, requires an API key for operation. This key is necessary both for the [DevContainer](#credentials-configuration) and within the [test pipeline](/jenkins/README.md#infracost-credentials).
+
+### Acquiring an Infracost API Key
+
+To obtain your Infracost API key, follow these steps:
+
+1. **Via CLI**: Typically, you can use the command `infracost auth login` to get an API key. However, if this method is unsuccessful, proceed to the next step.
+2. **Sign Up Online**: Register at [Infracost Dashboard](https://dashboard.infracost.io).
+3. **Retrieve API Key**: Once signed up, navigate to Org Settings on the dashboard to find your API key.
+
+For more detailed information on Infracost and its setup, refer to the [Infracost Quick-Start Guide](https://www.infracost.io/docs/#quick-start).

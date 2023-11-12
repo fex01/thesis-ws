@@ -162,6 +162,59 @@ convert_milliseconds_to_hours_minutes() {
     printf "%02d:%02d\n" "$hours" "$minutes"
 }
 
+# Function: validate_data
+# Description: Processes a multiline string, line by line.
+#              - Skips lines not starting with the specified build number.
+#              - Corrects test case numeration for older data.
+#              - Skips lines with zero runtime unless the test tool is 'terraform fmt'.
+# Parameters: 
+#   1. input_data - Multiline string to process.
+#   2. current_build_number - The build number to filter the data by.
+# Returns: 
+#   A multiline string with the processed data.
+validate_data() {
+    local input_data="$1"
+    local current_build_number="$2"
+    local processed_data=""
+
+    # Read each line from the input data
+    while IFS= read -r line; do
+        # Remove carriage returns and newlines
+        line=$(echo "$line" | tr -d '\r\n')
+
+        # Skip lines not starting with the current build number
+        if ! [[ "$line" =~ ^$current_build_number, ]]; then
+            continue  # Skip to next iteration
+        fi
+
+        # Correcting test case numeration for older data
+        line=$(echo "$line" | sed 's/,1,1,5,/,1,3,5,/g')
+        line=$(echo "$line" | sed 's/,1,2,5,/,1,4,5,/g')
+        line=$(echo "$line" | sed 's/,2,1,4,terra/,2,5,4,terra/g')
+        line=$(echo "$line" | sed 's/,2,2,4,pytest/,2,6,4,pytest/g')
+        line=$(echo "$line" | sed 's/,2,1,5,/,2,7,5,/g')
+        line=$(echo "$line" | sed 's/,3,1,4,pytest/,3,8,4,pytest/g')
+        line=$(echo "$line" | sed 's/,3,1,5,/,3,9,5,/g')
+        line=$(echo "$line" | sed 's/,4,1,4,pytest/,4,10,4,pytest/g')
+        line=$(echo "$line" | sed 's/,5,1,5,/,5,11,5,/g')
+        line=$(echo "$line" | sed 's/,6,1,4,pytest/,6,13,4,pytest/g')
+
+        # If runtime (field 6) is zero, it's likely a corrupted measurement and will be reported. 
+        # Exception: test tool 'terraform fmt', which can have a legitimate zero runtime (rounded down).
+        local field_5=$(echo "$line" | cut -d',' -f5)
+        local field_6=$(echo "$line" | cut -d',' -f6)
+        if [[ ! "$field_5" =~ fmt$ ]] && [[ "$field_6" == "0" ]]; then
+            continue  # Skip corrupted measurement
+        fi
+
+        # Append the processed line to the result
+        processed_data+="$line"$'\n'
+    done <<< "$input_data"
+
+    # Return the processed data
+    echo "$processed_data"
+}
+
 merge_csv_files() {
     local dir="$1"
     local csv_file="$2"
@@ -337,12 +390,10 @@ merge_csv_files() {
 
     echo "Merge build $current_build_number into $output_file"
 
+    file_content=$(validate_data "$file_content" "$current_build_number")
+
     # Append file content with additional build information
     while IFS= read -r line; do
-        # filter out lines that do not start with the current build number
-        if ! [[ "$line" =~ ^$current_build_number, ]]; then
-            continue  # Skip to next iteration if line does not start with current build number
-        fi
         line=$(echo "$line" | tr -d '\r\n')  # Remove carriage returns and newlines
         echo "$line,$revision,$build_start,$build_duration" >> "$output_file"
     done <<< "$file_content"

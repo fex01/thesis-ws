@@ -85,7 +85,6 @@ build,defect_category,test_case,test_approach,test_tool,runtime(millis),revision
 100,1,4,5,terraform test,3,bbaef07,20231031085527,00:55
 100,2,7,5,terraform test,4,bbaef07,20231031085527,00:55
 100,NA,NA,5,terraform destroy,687,bbaef07,20231031085527,00:55
-100,1,3,5,terraform apply,0,bbaef07,20231031085527,00:55
 100,5,NA,5,terratest,1521701,bbaef07,20231031085527,00:55
 101,8,NA,1,terraform fmt,0,57f800e,20231031095044,00:02
 101,8,NA,2,terraform validate,2,57f800e,20231031095044,00:02
@@ -97,7 +96,6 @@ build,defect_category,test_case,test_approach,test_tool,runtime(millis),revision
 101,2,5,4,terraform test,2,57f800e,20231031095044,00:02
 101,1,1,4,terraform test,5,57f800e,20231031095044,00:02
 101,1,2,4,terraform test,3,57f800e,20231031095044,00:02
-101,1,3,5,terraform apply,0,57f800e,20231031095044,00:02
 102,8,NA,1,terraform fmt,0,07c6662,20231031100318,00:42
 102,8,NA,2,terraform validate,2,07c6662,20231031100318,00:42
 102,6,NA,3,tfsec,8,07c6662,20231031100318,00:42

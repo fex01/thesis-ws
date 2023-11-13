@@ -151,15 +151,23 @@ convert_timestamp_to_datetimegroup() {
     fi
 }
 
-# Usage example:
-# convert_milliseconds_to_hours_minutes 3600000  # Output: 01:00
-convert_milliseconds_to_hours_minutes() {
+# This function converts a time duration from milliseconds to a formatted string in hours, minutes, and seconds.
+# Usage: convert_milliseconds_to_hours_minutes_seconds <milliseconds>
+convert_milliseconds_to_hours_minutes_seconds() {
     local milliseconds="$1"
-    local total_seconds=$((milliseconds / 1000))
+    # Convert milliseconds to seconds by dividing by 1000
+    # Add 500 before division to round to the nearest second
+    local total_seconds=$(((milliseconds + 500) / 1000))
+    # Calculate the number of hours by dividing the total seconds by 3600 (seconds in an hour)
     local hours=$((total_seconds / 3600))
+    # Calculate the number of minutes by first finding the remaining seconds after removing hours,
+    # then dividing by 60 (seconds in a minute)
     local minutes=$(((total_seconds % 3600) / 60))
+    # Calculate the remaining seconds by finding the remainder of total seconds after removing hours and minutes
+    local seconds=$((total_seconds % 60))
 
-    printf "%02d:%02d\n" "$hours" "$minutes"
+    # Print the formatted time in hh:mm:ss format, padding each unit with zeros if necessary
+    printf "%02d:%02d:%02d\n" "$hours" "$minutes" "$seconds"
 }
 
 # Function: validate_data
@@ -279,7 +287,7 @@ merge_csv_files() {
         build_start=$(convert_timestamp_to_datetimegroup \
             $(grep -m 1 -o "<startTime>[0-9]*</startTime>" "$dir/build.xml" \
             | awk -F'[<>]' '/<startTime>/ {print $3}'))
-        build_duration=$(convert_milliseconds_to_hours_minutes \
+        build_duration=$(convert_milliseconds_to_hours_minutes_seconds \
             $(grep -m 1 -o "<duration>[0-9]*</duration>" "$dir/build.xml" \
             | awk -F'[<>]' '/<duration>/ {print $3}'))
     else
@@ -319,7 +327,7 @@ merge_csv_files() {
             $(docker exec "$CONTAINER_NAME" bash -c \
                 "grep -m 1 -o '<startTime>[0-9]*</startTime>' \"$dir/build.xml\"" \
             | awk -F'[<>]' '/<startTime>/ {print $3}'))
-        build_duration=$(convert_milliseconds_to_hours_minutes \
+        build_duration=$(convert_milliseconds_to_hours_minutes_seconds \
             $(docker exec "$CONTAINER_NAME" bash -c \
                 "grep -m 1 -o '<duration>[0-9]*</duration>' \"$dir/build.xml\"" \
             | awk -F'[<>]' '/<duration>/ {print $3}'))
@@ -340,7 +348,7 @@ merge_csv_files() {
     current_header=$(echo "$current_header" | sed 's/\$/USD/g')
 
     # Add revision, build_start and build_duration to the file header
-    current_header="$current_header,revision,build_start,build_duration"
+    current_header="$current_header,revision,build_start,build_duration(hh:mm:ss)"
 
     # Handle changing CSV headers
     matched_file=""

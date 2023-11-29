@@ -20,7 +20,6 @@ ykey = 'runtime(seconds)'
 xlabel = 'Test Tool and Approach'
 ylabel = 'Average Runtime (seconds, log scale)'
 plot_title = 'Average Test Stage Runtime'
-debug = False
 name = os.path.splitext(os.path.basename(os.path.abspath(__file__)))[0]
 
 # Directory Management for Outputs
@@ -31,25 +30,27 @@ os.makedirs(tables_dir, exist_ok=True)
 
 # Data Loading, Filtering and Processing
 data = read_csv_to_dataframe(data_path)
-if debug: data.to_csv('0.csv')
 processed_data = flatten_multi_tc_apply_destroy_cycles(data)
-if debug: data.to_csv('1_flattened.csv')
 # Get overall stage runtimes: group by 'build', 'test_tool', and 'test_approach' and sum the runtimes
 summed_runtimes = processed_data.groupby(['build', 'test_tool', 'test_approach'])['runtime(seconds)'].sum().reset_index()
-if debug: data.to_csv('2_sum.csv')
 # Get average stage runtimes: group by 'test_tool' and 'test_approach' and calculate the average of these sums
 average_runtimes = summed_runtimes.groupby(['test_tool', 'test_approach'])['runtime(seconds)'].mean().reset_index()
-if debug: data.to_csv('3_avg.csv')
 # Sort by 'test_approach' and then by 'test_tool'
 average_runtimes.sort_values(by=['test_approach', 'test_tool'], inplace=True)
-if debug: data.to_csv('4_sorted.csv')
 # Create a combined label for test tool and test approach
 average_runtimes['tool_approach'] = average_runtimes['test_tool'] + " (TA" + average_runtimes['test_approach'].astype(str) + ")"
 
 # Output Preparation
 output_table_path = os.path.join(tables_dir, name + '.tex')
 output_figure_path = os.path.join(diagrams_dir, name + '.png')
-write_latex_table_from_plot(average_runtimes, output_table_path, plot_title, xlabel, ylabel, columns=[xkey, ykey])
+write_latex_table(
+    average_runtimes, 
+    output_table_path, 
+    plot_title, 
+    label_column_pairs=[
+        (xlabel, xkey),
+        (ylabel, ykey)
+    ])
 
 # Plotting and Saving Results
 plt.figure(figsize=(12, 6))

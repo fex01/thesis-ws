@@ -28,7 +28,7 @@ os.makedirs(tables_dir, exist_ok=True)
 
 # Data Loading, Filtering and Processing
 data = read_csv_to_dataframe(data_path)
-processed_data = flatten_multi_tc_apply_destroy_cycles(data)
+processed_data = flatten_multi_tc_apply_destroy_cycles(data, delete_originals=False)
 filtered_data = processed_data[(processed_data['test_case'] != -1)]
 
 # Calculating Average Runtimes
@@ -37,19 +37,19 @@ average_runtimes = filtered_data.groupby(['test_case', 'test_approach'])['runtim
 # Sorting the results first by 'test_approach' and then by 'test_case'
 average_runtimes.sort_values(by=['test_approach', 'test_case'], inplace=True)
 
-# Formatting Test Case Labels
-def format_test_case_label(test_case, test_approach):
-    test_case_str = str(int(test_case))
-    if len(test_case_str) > 2:
-        test_case_str = ','.join(test_case_str)
-    return f"TC{test_case_str} (TA{int(test_approach)})"
-
 average_runtimes['label'] = average_runtimes.apply(lambda row: format_test_case_label(row['test_case'], row['test_approach']), axis=1)
 
 # Output Preparation
 output_table_path = os.path.join(tables_dir, name + '.tex')
 output_figure_path = os.path.join(diagrams_dir, name + '.png')
-write_latex_table_from_plot(average_runtimes, output_table_path, plot_title, xlabel, ylabel, columns=[xkey, ykey])
+write_latex_table(
+    average_runtimes, 
+    output_table_path, 
+    plot_title, 
+    label_column_pairs=[
+        (xlabel, xkey),
+        (ylabel, ykey)
+    ])
 
 # Plotting and Saving Results
 plt.figure(figsize=(12, 6))

@@ -1,0 +1,60 @@
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth]{img/tc_runtime_distribution_static.png}
+  \caption{Test Case Runtime Distribution (Static)}
+  \label{fig:tc_runtime_distribution_static}
+\end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth]{img/tc_runtime_distribution_dynamic_fast.png}
+  \caption{Test Case Runtime Distribution (Dynamic, <= 1 minute)}
+  \label{fig:tc_runtime_distribution_dynamic_fast}
+\end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth]{img/tc_runtime_distribution_dynamic_slow.png}
+  \caption{Test Case Runtime Distribution (Dynamic, > 1 minute)}
+  \label{fig:tc_runtime_distribution_dynamic_slow}
+\end{figure}
+
+\begin{table}[h!]
+  \begin{tabular}{|l|r|r|r|r|r|r|r|r|}
+    \hline
+    & \multicolumn{8}{c|}{\textbf{Runtime (Seconds)}} \\
+    \hline
+    \textbf{TC (TA)} & Mean & Median & Q1 & Q3 & IQR & Min & Max & Std Dev \\
+    \hline
+    TC1 (TA4) & 5.4 & 5 & 5 & 6 & 1 & 5 & 6 & 0.49 \\
+    \hline
+    TC2 (TA4) & 2.4 & 2 & 2 & 3 & 1 & 2 & 3 & 0.49 \\
+    \hline
+    TC5 (TA4) & 1.31 & 1 & 1 & 2 & 1 & 1 & 2 & 0.46 \\
+    \hline
+    TC6 (TA4) & 1.35 & 1 & 1 & 2 & 1 & 1 & 2 & 0.48 \\
+    \hline
+    TC8 (TA4) & 1.28 & 1 & 1 & 2 & 1 & 1 & 2 & 0.45 \\
+    \hline
+    TC10 (TA4) & 1.16 & 1 & 1 & 1 & 0 & 1 & 2 & 0.37 \\
+    \hline
+    TC13 (TA4) & 1.24 & 1 & 1 & 1 & 0 & 1 & 2 & 0.43 \\
+    \hline
+    TC4 (TA5) & 3.76 & 4 & 4 & 4 & 0 & 3 & 4 & 0.44 \\
+    \hline
+    TC7 (TA5) & 3.38 & 3 & 3 & 4 & 1 & 3 & 4 & 0.5 \\
+    \hline
+    TC9 (TA5) & 3.67 & 4 & 3 & 4 & 1 & 3 & 4 & 0.48 \\
+    \hline
+    TC3 (TA5) & 1634.45 & 1645 & 1575.5 & 1716 & 140.5 & 1479 & 1743 & 89.64 \\
+    \hline
+    TC11 (TA5) & 1581.91 & 1576 & 1517 & 1668.5 & 151.5 & 1400 & 1710 & 104.08 \\
+    \hline
+    TC14 (TA5) & 1610.36 & 1548 & 1512 & 1594 & 82 & 1458 & 2285 & 231.08 \\
+    \hline
+    TC4,7,9 (TA5) & 1565.18 & 1580 & 1525 & 1617 & 92 & 1443 & 1652 & 69.02 \\
+    \hline
+  \end{tabular}
+  \caption{Test Case Runtime Distribution}
+  \label{tab:tc_runtime_distribution}
+\end{table}

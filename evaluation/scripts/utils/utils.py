@@ -160,151 +160,6 @@ def flatten_multi_tc_apply_destroy_cycles(original_data, delete_originals=True):
     return data
 
 
-
-def write_latex_table(df, filename, plot_title, label_column_pairs):
-    """
-    Writes selected DataFrame data to a LaTeX table and creates a LaTeX boilerplate for a corresponding figure.
-
-    :param df: Pandas DataFrame containing the data to be written.
-    :param filename: Full path to the output file (without extension) and the base for the LaTeX label.
-    :param plot_title: Title of the plot to use as the table caption and figure caption.
-    :param label_column_pairs: List of tuples containing labels and corresponding DataFrame column keys.
-    """
-    # Generate LaTeX label by extracting basename and removing file extension
-    label_name = os.path.splitext(os.path.basename(filename))[0]
-
-    # Extract the column keys from the label-column pairs
-    columns = [pair[1] for pair in label_column_pairs]
-
-    # Modify labels to remove ', log scale' if present
-    label_column_pairs = [(label.replace(', log scale', ''), col) for label, col in label_column_pairs]
-
-    selected_data = df[columns]
-
-    with open(filename + '.tex', 'w') as file:
-        # Write the LaTeX code for the figure
-        file.write(r"\begin{figure}[ht]" + "\n")
-        file.write(r"  \centering" + "\n")
-        file.write(fr"  \includegraphics[width=\textwidth]{{img/{label_name}.png}}" + "\n")
-        file.write(fr"  \caption{{{plot_title}}}" + "\n")
-        file.write(fr"  \label{{fig:{label_name}}}" + "\n")
-        file.write(r"\end{figure}" + "\n")
-        file.write("\n")
-
-        # Write the LaTeX code for the table with additional indentation
-        file.write(r"\begin{table}[h!]" + "\n")
-        file.write(r"  \begin{tabular}{|" + " | ".join(["l"] * len(label_column_pairs)) + "|}" + "\n")
-        file.write(r"    \hline" + "\n")
-        file.write("    " + " & ".join([f"\\textbf{{{label}}}" for label, _ in label_column_pairs]) + r" \\" + "\n")
-        file.write(r"    \hline" + "\n")
-        for _, row in selected_data.iterrows():
-            row_values = [f"{row[col]:.5f}".rstrip('0').rstrip('.') if isinstance(row[col], float) else row[col] for col in columns]
-            file.write("    " + " & ".join(str(val) for val in row_values) + r" \\" + "\n")
-            file.write(r"    \hline" + "\n")
-        file.write(r"  \end{tabular}" + "\n")
-        file.write(fr"  \caption{{{plot_title}}}" + "\n")
-        file.write(fr"  \label{{tab:{label_name}}}" + "\n")
-        file.write(r"\end{table}" + "\n")
-
-
-
-    
-def write_latex_summary_table(df, filename, plot_title, ylabel, legend_label, ykey, legend_key, series, suffixes=None):
-    """
-    Writes a LaTeX table for line diagram data, with a dynamic header and a joined cell 
-    indicating the ylabel. Optionally supports multiple figures with specified suffixes.
-
-    :param df: Pandas DataFrame containing the data to be summarized.
-    :param filename: Full path to the output file (without extension) and the base for the LaTeX label.
-    :param plot_title: Title of the plot to use as the table caption.
-    :param ylabel: Label for the y-axis, typically including the unit.
-    :param legend_label: Label for the legend, used as a header in the table.
-    :param ykey: Column name in DataFrame that contains the values.
-    :param legend_key: Column name in DataFrame that contains the legend.
-    :param series: List of sorted series labels.
-    :param suffixes: Optional list of tuples (suffix_label, suffix_title) for multiple figures.
-    """
-    label_name = os.path.splitext(os.path.basename(filename))[0]
-    statistics = ['Mean', 'Median', 'Q1', 'Q3', 'IQR', 'Min', 'Max', 'Std Dev']
-
-    with open(filename, 'w') as file:
-        if suffixes:
-            for suffix_label, suffix_title in suffixes:
-                fig_label_name = f"{label_name}{suffix_label}"
-
-                file.write(r"\begin{figure}[ht]" + "\n")
-                file.write(r"  \centering" + "\n")
-                file.write(fr"  \includegraphics[width=\textwidth]{{img/{fig_label_name}.png}}" + "\n")
-                file.write(fr"  \caption{{{plot_title}{suffix_title}}}" + "\n")
-                file.write(fr"  \label{{fig:{fig_label_name}}}" + "\n")
-                file.write(r"\end{figure}" + "\n\n")
-        else:
-            # Original figure code for single figure
-            file.write(r"\begin{figure}[ht]" + "\n")
-            file.write(r"  \centering" + "\n")
-            file.write(fr"  \includegraphics[width=\textwidth]{{img/{label_name}.png}}" + "\n")
-            file.write(fr"  \caption{{{plot_title}}}" + "\n")
-            file.write(fr"  \label{{fig:{label_name}}}" + "\n")
-            file.write(r"\end{figure}" + "\n\n")
-
-        # LaTeX code for the transposed summary table
-        file.write(r"\begin{table}[h!]" + "\n")
-        file.write(r"  \begin{tabular}{|l|" + "r|" * len(statistics) + "}" + "\n")
-        file.write(r"    \hline" + "\n")
-        file.write("    & \\multicolumn{" + str(len(statistics)) + "}{c|}{\\textbf{" + ylabel + "}} \\\\" + "\n")
-        file.write(r"    \hline" + "\n")
-        file.write("    \\textbf{" + legend_label + "} & " + " & ".join(stat for stat in statistics) + r" \\" + "\n")
-        file.write(r"    \hline" + "\n")
-        for s in series:
-            row_values = [get_statistic(df[df[legend_key] == s], ykey, stat) for stat in statistics]
-            file.write("    " + s + " & " + " & ".join(format_number(val) for val in row_values) + r" \\" + "\n")
-            file.write(r"    \hline" + "\n")
-        file.write(r"  \end{tabular}" + "\n")
-        file.write(fr"  \caption{{{plot_title}}}" + "\n")
-        file.write(fr"  \label{{tab:{label_name}}}" + "\n")
-        file.write(r"\end{table}" + "\n")
-
-def get_statistic(df, col, stat_type):
-    """
-    Helper function to calculate a statistic for a given DataFrame column.
-
-    :param df: Pandas DataFrame.
-    :param col: Column name for which to calculate the statistic.
-    :param stat_type: Type of statistic to calculate ('Mean', 'Median', 'Min', 'Max', 'Std Dev').
-    :return: Calculated statistic value.
-    """
-    if stat_type == 'Mean':
-        return df[col].mean()
-    elif stat_type == 'Median':
-        return df[col].median()
-    elif stat_type == 'Q1':
-        return df[col].quantile(0.25)
-    elif stat_type == 'Q3':
-        return df[col].quantile(0.75)
-    elif stat_type == 'IQR':
-        return df[col].quantile(0.75) - df[col].quantile(0.25)
-    elif stat_type == 'Min':
-        return df[col].min()
-    elif stat_type == 'Max':
-        return df[col].max()
-    elif stat_type == 'Std Dev':
-        return df[col].std()
-    else:
-        return None
-
-def format_number(num):
-    """
-    Helper function to format a number by removing trailing decimal zeros.
-    If no digits remain after the decimal point, the decimal point is also removed.
-
-    :param num: The number to be formatted.
-    :return: Formatted string representation of the number.
-    """
-    if isinstance(num, float):
-        return f"{num:.2f}".rstrip('0').rstrip('.')
-    return str(num)
-
-
 def filter_data_sets_by_build(original_data, min_build_value=None, max_build_value=None):
     """
     Filters data sets in the DataFrame to include only those within a specified range of 'build' values.
@@ -356,3 +211,227 @@ def format_test_case_label(test_case, test_approach):
     if len(test_case_str) > 2:
         test_case_str = ','.join(test_case_str)
     return f"TC{test_case_str} (TA{int(test_approach)})"
+
+def format_deploy_phase_label(test_tool):
+    """
+    Formats and returns a string label for a deploy phase.
+
+    This function takes a string with the Terraform command and returns the matching phase name.
+
+    :param test_tool: A string representing the deploy phase.
+    :return: A formatted string label representing the deploy phase.
+             For example, for test_tool='terraform apply', it returns "deploy".
+    """
+    return 'deploy' if test_tool == 'terraform apply' else 'destroy' if test_tool == 'terraform destroy' else None
+
+
+
+def write_latex(caption, label, data=None, header_key_pairs=None, summary_table=False,
+                output_file='../output.tex'):
+    """
+    Function to create LaTeX tables and figure boilerplate.
+    
+    :param caption: The title for the table or figure.
+    :param label: The LaTeX label for referencing. For figures also used as the file name.
+    :param header_key_pairs: List of tuples for header and key mapping in the table.
+    :param data: DataFrame for the table. If None, a figure is generated.
+    param summary_table: Boolean indicating whether to generate a summary table with statistics.
+    :param output_file: The file path for the output LaTeX file.
+    """
+    if data is not None:
+        if summary_table:
+            latex = generate_summary_table(data, header_key_pairs, caption, label)
+        else:
+            latex = generate_table(data, header_key_pairs, caption, label)
+
+    if data is None:
+        latex = generate_figure(label, caption)
+    
+    append_to_file(
+        output_file=output_file,
+        content=latex,
+        label=label
+    )
+
+
+
+def generate_table(data, header_key_pairs, caption, label):
+    """
+    Generates LaTeX code for a standard table.
+
+    :param data: Pandas DataFrame containing the data to be summarized.
+    :param header_key_pairs: List of tuples (human-readable label, DataFrame column key).
+    :param caption: Title of the table to use as the caption.
+    :param label: LaTeX label for referencing the table.
+    """
+    # Process header_key_pairs to remove ', log scale' from headers
+    processed_header_key_pairs = []
+    for header, key in header_key_pairs:
+        cleaned_header = header.replace(', log scale', '', 1)
+        cleaned_header = cleaned_header.replace(', Log Scale', '', 1)
+        processed_header_key_pairs.append((cleaned_header, key))
+    columns = [pair[1] for pair in processed_header_key_pairs]
+    selected_data = data[columns]
+
+    table_latex = r"\begin{table}[h!]" + "\n"
+    table_latex += r"  \begin{tabular}{|" + " | ".join(["l"] * len(processed_header_key_pairs)) + "|}" + "\n"
+    table_latex += r"    \hline" + "\n"
+    table_latex += "    " + " & ".join([f"\\textbf{{{label}}}" for label, _ in processed_header_key_pairs]) + r" \\" + "\n"
+    table_latex += r"    \hline" + "\n"
+    for _, row in selected_data.iterrows():
+        # Format each cell value using format_table_numbers
+        row_values = [format_table_numbers(row[col]) for col in columns]
+        table_latex += "    " + " & ".join(row_values) + r" \\" + "\n"
+        table_latex += r"    \hline" + "\n"
+    table_latex += r"  \end{tabular}" + "\n"
+    table_latex += fr"  \caption{{{caption}}}" + "\n"
+    table_latex += fr"  \label{{tab:{label}}}" + "\n"
+    table_latex += r"\end{table}" + "\n"
+
+    return table_latex
+
+
+
+def generate_summary_table(data, header_key_pairs, caption, label):
+    """
+    Generates LaTeX code for a summary table with statistics.
+
+    :param data: Pandas DataFrame containing the data to be summarized.
+    :param header_key_pairs: List of tuples (human-readable label, DataFrame column key).
+    :param caption: Title of the table to use as the caption.
+    :param label: LaTeX label for referencing the table.
+    """
+    if len(header_key_pairs) != 2:
+        raise ValueError("header_key_pairs must contain exactly two pairs.")
+
+    # Unpacking the pairs
+    legend_label, legend_key = header_key_pairs[0]
+    ylabel, ykey = header_key_pairs[1]
+    row_headers = data[legend_key].unique()
+    statistics = ['Mean', 'Median', 'Q1', 'Q3', 'IQR', 'Min', 'Max', 'Std Dev']
+
+    table_latex = r"\begin{table}[h!]" + "\n"
+    table_latex += r"  \begin{tabular}{|l|" + "r|" * len(statistics) + "}" + "\n"
+    table_latex += r"    \hline" + "\n"
+    table_latex += "    & \\multicolumn{" + str(len(statistics)) + "}{c|}{\\textbf{" + ylabel + "}} \\\\" + "\n"
+    table_latex += r"    \hline" + "\n"
+    table_latex += "    \\textbf{" + legend_label + "} & " + " & ".join(stat for stat in statistics) + r" \\" + "\n"
+    table_latex += r"    \hline" + "\n"
+    for s in row_headers:
+        row_values = [get_statistic(data[data[legend_key] == s], ykey, stat) for stat in statistics]
+        table_latex += "    " + s + " & " + " & ".join(format_table_numbers(val) for val in row_values) + r" \\" + "\n"
+        table_latex += r"    \hline" + "\n"
+    table_latex += r"  \end{tabular}" + "\n"
+    table_latex += fr"  \caption{{{caption}}}" + "\n"
+    table_latex += fr"  \label{{tab:{label}}}" + "\n"
+    table_latex += r"\end{table}" + "\n"
+
+    return table_latex
+
+
+def get_statistic(df, col, stat_type):
+    """
+    Helper function to calculate a statistic for a given DataFrame column.
+
+    :param df: Pandas DataFrame.
+    :param col: Column name for which to calculate the statistic.
+    :param stat_type: Type of statistic to calculate ('Mean', 'Median', 'Min', 'Max', 'Std Dev').
+    :return: Calculated statistic value.
+    """
+    if stat_type == 'Mean':
+        return df[col].mean()
+    elif stat_type == 'Median':
+        return df[col].median()
+    elif stat_type == 'Q1':
+        return df[col].quantile(0.25)
+    elif stat_type == 'Q3':
+        return df[col].quantile(0.75)
+    elif stat_type == 'IQR':
+        return df[col].quantile(0.75) - df[col].quantile(0.25)
+    elif stat_type == 'Min':
+        return df[col].min()
+    elif stat_type == 'Max':
+        return df[col].max()
+    elif stat_type == 'Std Dev':
+        return df[col].std()
+    else:
+        return None
+
+def format_table_numbers(num):
+    """
+    Formats a number by rounding it to two digits, then removing trailing decimal zeros.
+    If no digits remain after the decimal point, the decimal point is also removed.
+
+    :param num: The number to be formatted.
+    :return: Formatted string representation of the number.
+    """
+    if isinstance(num, float):
+        # Round to two digits and remove trailing zeros and decimal point if necessary
+        return f"{num:.2f}".rstrip('0').rstrip('.')
+    return str(num)
+
+
+
+def generate_figure(label, caption):
+    """
+    Generates LaTeX code for a figure.
+    """
+    figure_latex = r"\begin{figure}[h!]" + "\n"
+    figure_latex += r"  \centering" + "\n"
+    figure_latex += fr"  \includegraphics[width=\textwidth]{{img/{label}.png}}" + "\n"
+    figure_latex += fr"  \caption{{{caption}}}" + "\n"
+    figure_latex += fr"  \label{{fig:{label}}}" + "\n"
+    figure_latex += r"\end{figure}" + "\n"
+
+    return figure_latex
+
+
+def append_to_file(output_file, label, content):
+    """
+    Appends or replaces content in a LaTeX file based on a specific label substring.
+
+    :param output_file: Path to the LaTeX file.
+    :param label: The unique substring of the label of the table or figure to append or replace.
+    :param content: The LaTeX code to append or replace in the file.
+    """
+    try:
+        with open(output_file, 'r+') as file:
+            existing_content = file.read()
+
+            # Determine whether it's a table or figure
+            if r'\begin{table}' in content:
+                start_tag = r'\begin{table}'
+                end_tag = r'\end{table}'
+            elif r'\begin{figure}' in content:
+                start_tag = r'\begin{figure}'
+                end_tag = r'\end{figure}'
+            else:
+                file.write(content)
+                return
+
+            # Search for the label within the section
+            section_start = existing_content.find(start_tag)
+            while section_start != -1:
+                section_end = existing_content.find(end_tag, section_start) + len(end_tag)
+                section_content = existing_content[section_start:section_end]
+
+                if label in section_content:
+                    # Replace existing content
+                    new_content = existing_content[:section_start] + content + existing_content[section_end:]
+                    break
+
+                section_start = existing_content.find(start_tag, section_end)
+
+            else:
+                # Append new content if no match was found
+                new_content = existing_content + '\n' + content
+
+            # Write updated content
+            file.seek(0)
+            file.write(new_content)
+            file.truncate()
+
+    except FileNotFoundError:
+        # Create file if it doesn't exist
+        with open(output_file, 'w') as file:
+            file.write(content)

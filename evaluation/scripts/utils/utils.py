@@ -1,5 +1,10 @@
 import pandas as pd
 import os
+import subprocess
+
+# Constants for script for cost calculation and cost breakdown file paths
+CALCULATE_COSTS_SCRIPT_PATH = '../../terraform/scripts/calculate_costs.py'
+COST_BREAKDOWN_FILE_PATH = '../../measurements/infracost_build_1.json'
 
 
 def read_csv_to_dataframe(data_path):
@@ -104,8 +109,6 @@ def flatten_multi_tc_apply_destroy_cycles(original_data, delete_originals=True):
         if in_sequence and row['build'] == start_build:
             # Accumulate data for the sequence
             runtime_sum += row['runtime(seconds)']
-            if not pd.isna(row['costs(USD)']):
-                cost_sum += row['costs(USD)']
 
             if row['test_tool'] != 'terraform destroy':
                 # Process non-destroy test tools
@@ -116,7 +119,17 @@ def flatten_multi_tc_apply_destroy_cycles(original_data, delete_originals=True):
                     defect_category = -1  # Mark as -1 if defect categories differ
 
             if row['test_tool'] == 'terraform destroy':
-                # End of sequence, create new entry
+                # End of sequence, call external script for cost calculation
+                subprocess_result = subprocess.run(
+                    [
+                        'python3', CALCULATE_COSTS_SCRIPT_PATH, 
+                        '--infracost-json', COST_BREAKDOWN_FILE_PATH, 
+                        '--runtime', str(int(runtime_sum)),
+                        '--split-by', '1'
+                    ],
+                    capture_output=True, text=True
+                )
+                cost_sum = round(float(subprocess_result.stdout.strip()), 5)
                 test_cases_list.sort()
                 sorted_test_cases = int(''.join(map(str, test_cases_list)))
                 new_entry = {

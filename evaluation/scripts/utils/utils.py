@@ -225,6 +225,25 @@ def format_test_case_label(test_case, test_approach):
         test_case_str = ','.join(test_case_str)
     return f"TC{test_case_str} (TA{int(test_approach)})"
 
+def short_test_case_label(test_case):
+    """
+    Returns a string label for a test case.
+
+    This function takes a numerical value for a test case and returns a formatted string label.
+    If the test case number has more than two digits, commas are inserted between each digit.
+    The test case number is prepended with 'TC'.
+
+    :param test_case: An integer or a float representing the test case number. 
+                      If a float is provided, it is converted to an integer.
+    :return: A formatted string label representing the test case.
+             For example, for test_case=123, it returns "TC1,2,3".
+             For test_case=12, it returns "TC12".
+    """
+    test_case_str = str(int(test_case))
+    if len(test_case_str) > 2:
+        test_case_str = ','.join(test_case_str)
+    return f"TC{test_case_str}"
+
 def format_deploy_phase_label(test_tool):
     """
     Formats and returns a string label for a deploy phase.
@@ -240,7 +259,7 @@ def format_deploy_phase_label(test_tool):
 
 
 def write_latex(caption, label, data=None, header_key_pairs=None, summary_table=False,
-                output_file='../output.tex'):
+                output_file='../output.tex', digits=2):
     """
     Function to create LaTeX tables and figure boilerplate.
     
@@ -248,14 +267,15 @@ def write_latex(caption, label, data=None, header_key_pairs=None, summary_table=
     :param label: The LaTeX label for referencing. For figures also used as the file name.
     :param header_key_pairs: List of tuples for header and key mapping in the table.
     :param data: DataFrame for the table. If None, a figure is generated.
-    param summary_table: Boolean indicating whether to generate a summary table with statistics.
+    :param summary_table: Boolean indicating whether to generate a summary table with statistics.
     :param output_file: The file path for the output LaTeX file.
+    :param digits: Optional; Number of digits to round floating-point numbers to (default is 2).
     """
     if data is not None:
         if summary_table:
-            latex = generate_summary_table(data, header_key_pairs, caption, label)
+            latex = generate_summary_table(data, header_key_pairs, caption, label, digits)
         else:
-            latex = generate_table(data, header_key_pairs, caption, label)
+            latex = generate_table(data, header_key_pairs, caption, label, digits)
 
     if data is None:
         latex = generate_figure(label, caption)
@@ -268,7 +288,7 @@ def write_latex(caption, label, data=None, header_key_pairs=None, summary_table=
 
 
 
-def generate_table(data, header_key_pairs, caption, label):
+def generate_table(data, header_key_pairs, caption, label, digits=2):
     """
     Generates LaTeX code for a standard table.
 
@@ -276,6 +296,7 @@ def generate_table(data, header_key_pairs, caption, label):
     :param header_key_pairs: List of tuples (human-readable label, DataFrame column key).
     :param caption: Title of the table to use as the caption.
     :param label: LaTeX label for referencing the table.
+    :param digits: Number of digits to round floating-point numbers to (default is 2).
     """
     # Process header_key_pairs to remove ', log scale' from headers
     processed_header_key_pairs = []
@@ -293,7 +314,7 @@ def generate_table(data, header_key_pairs, caption, label):
     table_latex += r"    \hline" + "\n"
     for _, row in selected_data.iterrows():
         # Format each cell value using format_table_numbers
-        row_values = [format_table_numbers(row[col]) for col in columns]
+        row_values = [format_table_numbers(row[col], digits) for col in columns]
         table_latex += "    " + " & ".join(row_values) + r" \\" + "\n"
         table_latex += r"    \hline" + "\n"
     table_latex += r"  \end{tabular}" + "\n"
@@ -304,8 +325,7 @@ def generate_table(data, header_key_pairs, caption, label):
     return table_latex
 
 
-
-def generate_summary_table(data, header_key_pairs, caption, label):
+def generate_summary_table(data, header_key_pairs, caption, label, digits=2):
     """
     Generates LaTeX code for a summary table with statistics.
 
@@ -313,6 +333,7 @@ def generate_summary_table(data, header_key_pairs, caption, label):
     :param header_key_pairs: List of tuples (human-readable label, DataFrame column key).
     :param caption: Title of the table to use as the caption.
     :param label: LaTeX label for referencing the table.
+    :param digits: Number of digits to round floating-point numbers to (default is 2).
     """
     if len(header_key_pairs) != 2:
         raise ValueError("header_key_pairs must contain exactly two pairs.")
@@ -323,7 +344,12 @@ def generate_summary_table(data, header_key_pairs, caption, label):
     row_headers = data[legend_key].unique()
     statistics = ['Mean', 'Median', 'Q1', 'Q3', 'IQR', 'Min', 'Max', 'Std Dev']
 
+
+    # Checking if resizebox is needed
+    resizebox = digits >= 5
+
     table_latex = r"\begin{table}[h!]" + "\n"
+    if resizebox: table_latex += r"  \resizebox{\textwidth}{!}{" + "\n"
     table_latex += r"  \begin{tabular}{|l|" + "r|" * len(statistics) + "}" + "\n"
     table_latex += r"    \hline" + "\n"
     table_latex += "    & \\multicolumn{" + str(len(statistics)) + "}{c|}{\\textbf{" + ylabel + "}} \\\\" + "\n"
@@ -331,15 +357,19 @@ def generate_summary_table(data, header_key_pairs, caption, label):
     table_latex += "    \\textbf{" + legend_label + "} & " + " & ".join(stat for stat in statistics) + r" \\" + "\n"
     table_latex += r"    \hline" + "\n"
     for s in row_headers:
-        row_values = [get_statistic(data[data[legend_key] == s], ykey, stat) for stat in statistics]
-        table_latex += "    " + s + " & " + " & ".join(format_table_numbers(val) for val in row_values) + r" \\" + "\n"
+        subset = data[data[legend_key] == s]
+        row_values = [get_statistic(subset, ykey, stat) for stat in statistics]
+        formatted_values = [format_table_numbers(val, digits) for val in row_values]
+        table_latex += "    " + s + " & " + " & ".join(formatted_values) + r" \\" + "\n"
         table_latex += r"    \hline" + "\n"
     table_latex += r"  \end{tabular}" + "\n"
+    if resizebox: table_latex += r"  }" + "\n"
     table_latex += fr"  \caption{{{caption}}}" + "\n"
     table_latex += fr"  \label{{tab:{label}}}" + "\n"
     table_latex += r"\end{table}" + "\n"
 
     return table_latex
+
 
 
 def get_statistic(df, col, stat_type):
@@ -370,18 +400,21 @@ def get_statistic(df, col, stat_type):
     else:
         return None
 
-def format_table_numbers(num):
+def format_table_numbers(num, digits=2):
     """
-    Formats a number by rounding it to two digits, then removing trailing decimal zeros.
-    If no digits remain after the decimal point, the decimal point is also removed.
+    Formats a number by rounding it to a specified number of digits, appending trailing zeros if necessary.
+    If the input cannot be cast to a float, returns 'NaN'.
 
-    :param num: The number to be formatted.
-    :return: Formatted string representation of the number.
+    :param num: The number to be formatted. Can be a float, int, or string.
+    :param digits: Number of digits to round the number to (default is 2).
+    :return: Formatted string representation of the number or 'NaN' if casting fails.
     """
-    if isinstance(num, float):
-        # Round to two digits and remove trailing zeros and decimal point if necessary
-        return f"{num:.2f}".rstrip('0').rstrip('.')
-    return str(num)
+    try:
+        float_num = float(num)
+        format_str = f"{{:.{digits}f}}"
+        return format_str.format(float_num)
+    except ValueError:
+        return num
 
 
 

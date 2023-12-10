@@ -202,15 +202,6 @@ plots_info = [
         "digits": 2
     },
     {
-        "data": tc_cost_data,
-        "label_prefix": 'tc_cost_box_whisker_',
-        "caption": 'Box Whisker Plot of Test Case Costs',
-        "xlabel": 'Test Case and Approach',
-        "ylabel": 'Costs (USD)',
-        "type": "box_whisker",
-        "digits": 5
-    },
-    {
         "data": tc_runtime_data_extended,
         "label_prefix": 'tc_',
         "caption": 'Average Test Case Runtime',
@@ -257,30 +248,6 @@ for plot_info in plots_info:
             (plot_info["ylabel"], runtime_key),
             (plot_info["y2label"], costs_key)
         ]
-    elif plot_info["type"] == "box_whisker":
-        generate_box_whisker_plot(
-            plot_info["data"],
-            plot_info["caption"],
-            xkey=label_key,
-            xlabel=plot_info["xlabel"],
-            ykey=costs_key,
-            ylabel=plot_info["ylabel"],
-            output_path=output_path,
-            y_lim=(0.17, 0.19)
-        )
-        header_key_pairs=[
-            (plot_info["xlabel"], label_key),
-            (plot_info["ylabel"], costs_key)
-        ]
-        latex_label = plot_info["label_prefix"] + filename
-        write_latex(
-            caption=plot_info["caption"],
-            label=latex_label,
-            data=plot_info["data"],
-            header_key_pairs=header_key_pairs,
-            digits=plot_info["digits"],
-            summary_table=True
-        )
     # Create LaTeX table and figure boilerplate
     latex_label = plot_info["label_prefix"] + filename
     write_latex(plot_info["caption"], latex_label)

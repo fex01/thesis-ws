@@ -52,3 +52,6 @@ terraform.rc
 
 # tmp files and folders
 tmp*
+
+## Python
+**/__pycache__

@@ -41,35 +41,19 @@ def tc_data_processing(data):
     data.sort_values(by=[xkey], inplace=True)
     return data
 
-def generate_box_whisker_plot(data, plot_title, xkey, xlabel, ykey, ylabel, output_path):
-    plt.figure(figsize=(12, 6))
-    # Create a mapping from xkey values to their order in the unique array
-    unique_keys = data[xkey].unique()
-    order_mapping = {key: i for i, key in enumerate(unique_keys)}
-    # Group the data by xkey without sorting
-    grouped_data = data.groupby(xkey, sort=False)
-    # Sort the plot data based on the order_mapping determined by the unique keys
-    plot_data = [group[ykey].values for _, group in sorted(grouped_data, key=lambda x: order_mapping[x[0]])]
-    plt.boxplot(plot_data)
-    plt.ylabel(ylabel)
-    plt.xlabel(xlabel)
-    # Set the x-axis ticks to the unique xkey values in the original order
-    plt.xticks(range(1, len(unique_keys) + 1), unique_keys)   
-    plt.title(plot_title)
-    plt.tight_layout()
-    plt.savefig(output_path, dpi=300, bbox_inches='tight')
-    plt.show()
-
-def generate_dual_box_whisker_plot(data, data_subset_1, data_subset_2, plot_title, xkey, xlabel, ykey, ylabel, output_path):
-    plt.figure(figsize=(15, 6))
-    # First subplot
-    plt.subplot(1, 2, 1)
-    generate_single_box_whisker_plot(data_subset_1, xkey, xlabel, ykey, ylabel)
-    plt.title(plot_title + " (Multiple TC in One Cycle)")
-    # Second subplot
-    plt.subplot(1, 2, 2)
-    generate_single_box_whisker_plot(data_subset_2, xkey, xlabel, ykey, ylabel)
-    plt.title(plot_title + " (Complete Cycle)")
+def generate_box_whisker_plots(title, data_sets, title_postfixes, xkey, xlabel, ykey, ylabel, output_path):
+    num_plots = len(data_sets)
+    # Determine the number of rows and columns for the subplots
+    if num_plots == 2:
+        rows, cols = 1, 2
+    else:
+        rows, cols = (num_plots + 1) // 2, 2  # Adjust for an odd number of plots
+    plt.figure(figsize=(7 * cols, 6 * rows))
+    for i in range(num_plots):
+        plt.subplot(1, num_plots, i + 1)
+        generate_single_box_whisker_plot(data_sets[i], xkey, xlabel, ykey, ylabel)
+        postfix = title_postfixes[i] if i < len(title_postfixes) else ""
+        plt.title(title + " " + postfix)
     plt.tight_layout()
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
     plt.show()
@@ -92,21 +76,10 @@ tc_data_complete = tc_data[~tc_data['test_case'].isin([4, 7, 9])]
 filename = os.path.splitext(os.path.basename(os.path.abspath(__file__)))[0]
 output_path = os.path.join(diagrams_dir, filename + '.png')
 
-# Generate plot, latex table and latex figure boilerplate
-# generate_box_whisker_plot(
-#     data=tc_data,
-#     plot_title=plot_title,
-#     xkey=label_key,
-#     xlabel=xlabel,
-#     ykey=ykey,
-#     ylabel=ylabel,
-#     output_path=output_path
-# )
-generate_dual_box_whisker_plot(
-    data=tc_data,
-    data_subset_1=tc_data_net,
-    data_subset_2=tc_data_complete,
-    plot_title=plot_title,
+generate_box_whisker_plots(
+    title=plot_title,
+    data_sets=[tc_data_net, tc_data_complete],
+    title_postfixes=[" (Multiple TC in One Cycle)", " (Complete Cycle)"],
     xkey=label_key,
     xlabel=xlabel,
     ykey=ykey,

@@ -129,6 +129,36 @@ def generate_violin_plot(data, plot_title, xlabel, output_path):
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
     plt.show()
 
+def generate_box_whisker_plots(title, data_sets, title_postfixes, xkey, xlabels, ykey, ylabel, output_path):
+    num_plots = len(data_sets)
+    # Determine the number of rows and columns for the subplots
+    if num_plots == 2:
+        rows, cols = 1, 2
+    else:
+        rows, cols = (num_plots + 1) // 2, 2  # Adjust for an odd number of plots
+    plt.figure(figsize=(7 * cols, 6 * rows))    
+    for i in range(num_plots):
+        index = i + 1  # Subplot index starts at 1
+        plt.subplot(rows, cols, index)
+        # Select xlabel from list, using the first entry as default if not enough labels are provided
+        current_xlabel = xlabels[i] if i < len(xlabels) else xlabels[0]
+        generate_single_box_whisker_plot(data_sets[i], xkey, current_xlabel, ykey, ylabel)        
+        postfix = title_postfixes[i] if i < len(title_postfixes) else ""
+        plt.title(title + " " + postfix)    
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=300, bbox_inches='tight')
+    plt.show()
+
+def generate_single_box_whisker_plot(data, xkey, xlabel, ykey, ylabel):
+    unique_keys = data[xkey].unique()
+    order_mapping = {key: i for i, key in enumerate(unique_keys)}
+    grouped_data = data.groupby(xkey, sort=False)
+    plot_data = [group[ykey].values for _, group in sorted(grouped_data, key=lambda x: order_mapping[x[0]])]
+    plt.boxplot(plot_data)
+    plt.ylabel(ylabel)
+    plt.xlabel(xlabel)
+    plt.xticks(range(1, len(unique_keys) + 1), unique_keys, rotation=45)
+
 def create_latex_for_type(plots_info, type_key, plot_title, filename):
     combined_data = pd.DataFrame()
 
@@ -220,6 +250,32 @@ for plot_info in plots_info:
         plot_info["violin_xlabel"],
         os.path.join(diagrams_dir, plot_info["label_prefix"] + filename + '_violin.png')
     )
+
+generate_box_whisker_plots(
+    title="Runtime Distribution",
+    data_sets=[
+        static_stages_data,
+        static_tc_data, 
+        dynamic_standalone_tc_and_phases_data,
+        dynamic_combined_tc_data
+    ],
+    title_postfixes=[
+        " Static Stages",
+        " Static Test Cases",
+        " Dynamic Standalone TC",
+        " Dynamic Combined TC"
+    ],    
+    xkey=legend_key,
+    xlabels=[
+        "Test Tool and Approach",
+        "Test Case and Approach",
+        "Test Case and Approach",
+        "Test Case and Approach"
+    ],
+    ykey=ykey,
+    ylabel=ylabel,
+    output_path=os.path.join(diagrams_dir, filename + '.png')
+)
 
 # Create LaTeX tables for each type
 create_latex_for_type(plots_info, "tc", plot_title_tc, filename)

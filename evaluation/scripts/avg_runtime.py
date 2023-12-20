@@ -154,12 +154,50 @@ def generate_double_bar_plot(data, plot_title, xkey, xlabel, ykey, ylabel, y2key
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
     plt.show()
 
+def generate_bar_plots(title, data_sets, title_postfixes, xkey, xlabels, ykey, ylabel, output_path):
+    num_plots = len(data_sets)
+    bar_width = 0.6  # The maximum width that a bar can have
+
+    # Set a sensible figure width and height to get readable labels
+    fig_width = 12  # Adjust as needed
+    fig_height_per_row = 6  # Height per row of subplots
+
+    # Create the figure with the overall size
+    fig = plt.figure(figsize=(fig_width, fig_height_per_row * 2))  # Two rows of plots
+
+    # Plot the first plot using the full width
+    ax1 = plt.subplot2grid((2, 2), (0, 0), colspan=2)
+    data = data_sets[0]
+    ax1.bar(data[xkey], data[ykey], color='blue', width=bar_width, align='center')
+    ax1.set_xticks(range(len(data[xkey])))
+    ax1.set_xticklabels(data[xkey], rotation=45, ha='right', fontsize=8)
+    ax1.set_ylabel(ylabel)
+    ax1.set_xlabel(xlabels[0])
+    ax1.set_title(title + " " + title_postfixes[0])
+
+    # Plot the second and third plots in the second row, sharing the width
+    for i in range(1, num_plots):
+        ax = plt.subplot2grid((2, 2), (1, i - 1))
+        data = data_sets[i]
+        ax.bar(data[xkey], data[ykey], color='blue', width=bar_width, align='center')
+        ax.set_xticks(range(len(data[xkey])))
+        ax.set_xticklabels(data[xkey], rotation=45, ha='right', fontsize=8)
+        ax.set_ylabel(ylabel if i == 1 else "")  # Only add y-label to the first of the second-row plots
+        ax.set_xlabel(xlabels[i])
+        ax.set_title(title + " " + title_postfixes[i])
+
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=300, bbox_inches='tight')
+    plt.show()
+
 
 # Data Loading, Filtering and Processing
 data = read_csv_to_dataframe(data_path)
 
 dynamic_combined_tc_data = filtering_dynamic_combined_tc(data)
 dynamic_standalone_tc_data = filtering_dynamic_standalone_tc(data)
+static_tc_data = filtering_static_tc(data)
+phases_data = deploy_phases_data_processing(filtering_deploy_destroy_phases(data))
 tc_runtime_data = tc_data_processing(pd.concat([
     filtering_static_tc(data), 
     dynamic_combined_tc_data, 
@@ -259,6 +297,33 @@ for plot_info in plots_info:
         digits=plot_info["digits"]
     )
 
+generate_bar_plots(
+    title="",
+    data_sets=[
+        tc_data_processing(static_tc_data),
+        tc_data_processing(dynamic_combined_tc_data), 
+        pd.concat([
+            tc_data_processing(dynamic_standalone_tc_data),
+            phases_data
+        ])
+    ],
+    title_postfixes=[
+        "Static Test Cases",
+        "Dynamic TC - Net Runtime",
+        "Standalone Dynamic TC and Phases",
+        "Deploy and Destroy Phases"
+    ],    
+    xkey=label_key,
+    xlabels=[
+        "Test Case and Approach",
+        "Test Case and Approach",
+        "Test Case and Approach",
+        "Deployment Phase"
+    ],
+    ykey=runtime_key,
+    ylabel="Average Runtime (Seconds)",
+    output_path=os.path.join(diagrams_dir, filename + '.png')
+)
 
 
 

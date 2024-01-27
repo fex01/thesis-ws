@@ -174,7 +174,9 @@ Note that usage of `cloud-nuke` is a powerful action that should be taken with f
 
 ### Additional Cleanup Feature: The "Nuke" Stage in Test Pipeline
 
-In addition to manual invocation, our test pipeline includes a dedicated stage named "nuke" that is designed to automate the cleanup process. You have the option to enable or disable this stage by setting the pipeline parameter `use_cloud_nuke`. When enabled, this stage will run `cloud-nuke` with the exemption configuration file located at [terraform/cloud-nuke.yaml](/terraform/cloud-nuke.yaml).
+In addition to manual invocation, our test pipeline includes a dedicated `post` action that is designed to automate the cleanup process. You have the option to enable or disable this step by setting the pipeline parameter `nuke` (default: `false`). 
+
+When enabled, this stage will run `cloud-nuke` with the exemption configuration file located at [terraform/cloud-nuke.yaml](/terraform/cloud-nuke.yaml).
 
 ### Cloud-Nuke Exemption Configuration
 

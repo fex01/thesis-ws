@@ -12,7 +12,7 @@ This separation is done to facilitate streamlined testing, as the test pipeline 
   - [Devcontainer Configuration](#devcontainer-configuration)
   - [Running the Devcontainer](#running-the-devcontainer)
 - [Test Pipeline](#test-pipeline): Instructions for executing the test pipeline with the provided Jenkinsfile.
-- [Submodule thesis-tf](#submodule-thesis-tf): The core elements of the PoC including Terraform configurations and test implementations.
+- [Submodule thesis-tf](#submodule-thesis-tf): The core elements of the PoC including Terraform configuration, Jenkinsfile, and test implementations.
 - [Data Collection](#data-collection): The approach for collecting test metrics and cost data within the test pipeline.
   - [Test Execution and Data Capture](#test-execution-and-data-capture)
   - [Metrics Collection](#metrics-collection)
@@ -22,9 +22,8 @@ This separation is done to facilitate streamlined testing, as the test pipeline 
   - [Additional Cleanup Feature: The "Nuke" Stage in Test Pipeline](#additional-cleanup-feature-the-nuke-stage-in-test-pipeline)
   - [Cloud-Nuke Exemption Configuration](#cloud-nuke-exemption-configuration)
 - [Account Creation](#account-creation): Steps for setting up necessary accounts for using the PoC.
-  - [AWS](#aws)
-  - [AWS Host Configuration Integration](#aws-host-configuration-integration)
-- [Infracost](#infracost): TODO
+  - [AWS](#aws): Creating an AWS account and user.
+  - [Infracost](#infracost): Acquiring an Infracost API key.
 
 ## Devcontainer
 

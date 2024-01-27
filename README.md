@@ -174,9 +174,7 @@ Note that usage of `cloud-nuke` is a powerful action that should be taken with f
 
 ### Additional Cleanup Feature: The "Nuke" Stage in Test Pipeline
 
-In addition to manual invocation, our test pipeline includes a dedicated stage named "nuke" that is designed to automate the cleanup process. If `cloud-nuke` is installed on the Jenkins server, this stage will execute `cloud-nuke` using the AWS credentials provided. You have the option to enable or disable this stage by setting the pipeline parameter `use_cloud_nuke`.
-
-If you are utilizing our custom Dockerfile for Jenkins, then `cloud-nuke` comes preinstalled on the Jenkins server, enabling immediate use of this feature.
+In addition to manual invocation, our test pipeline includes a dedicated stage named "nuke" that is designed to automate the cleanup process. You have the option to enable or disable this stage by setting the pipeline parameter `use_cloud_nuke`. When enabled, this stage will run `cloud-nuke` with the exemption configuration file located at [terraform/cloud-nuke.yaml](/terraform/cloud-nuke.yaml).
 
 ### Cloud-Nuke Exemption Configuration
 

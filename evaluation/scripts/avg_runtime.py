@@ -174,6 +174,11 @@ def generate_bar_plots(title, data_sets, title_postfixes, xkey, xlabels, ykey, y
     ax1.set_ylabel(ylabel)
     ax1.set_xlabel(xlabels[0])
     ax1.set_title(title + " " + title_postfixes[0])
+    # Apply the 10-second limit or marker based on the data maximum
+    if data[ykey].max() <= 10:
+        ax1.set_ylim(0, 10)  # Fix the y-axis limit to 10 seconds if max is less or equal to 10
+    else:
+        ax1.axhline(y=10, color='red', linestyle='--')  # Add a 10-second marker line if max is greater than 10
 
     # Plot the second and third plots in the second row, sharing the width
     for i in range(1, num_plots):
@@ -185,6 +190,11 @@ def generate_bar_plots(title, data_sets, title_postfixes, xkey, xlabels, ykey, y
         ax.set_ylabel(ylabel if i == 1 else "")  # Only add y-label to the first of the second-row plots
         ax.set_xlabel(xlabels[i])
         ax.set_title(title + " " + title_postfixes[i])
+        # Apply the 10-second limit or marker based on the data maximum
+        if data[ykey].max() <= 10:
+            ax.set_ylim(0, 10)  # Fix the y-axis limit to 10 seconds if max is less or equal to 10
+        else:
+            ax.axhline(y=10, color='red', linestyle='--')  # Add a 10-second marker line if max is greater than 10
 
     plt.tight_layout()
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
@@ -324,7 +334,3 @@ generate_bar_plots(
     ylabel="Average Runtime (Seconds)",
     output_path=os.path.join(diagrams_dir, filename + '.png')
 )
-
-
-
-

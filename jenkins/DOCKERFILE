@@ -1,4 +1,4 @@
-FROM jenkins/jenkins:2.427-jdk21
+FROM jenkins/jenkins:2.442-jdk21
 
 # Switch to root user for privileged operations
 USER root

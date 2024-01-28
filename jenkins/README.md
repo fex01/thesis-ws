@@ -32,7 +32,7 @@ docker run --name jenkins-docker --rm --detach --privileged --network jenkins --
 Build a custom Jenkins image tailored for this project:
 
 ```bash
-docker build jenkins/ -f jenkins/DOCKERFILE -t myjenkins-blueocean:2.427-1
+docker build jenkins/ -f jenkins/DOCKERFILE -t myjenkins-blueocean:2.442
 ```
 
 ### Run Jenkins Container
@@ -40,7 +40,7 @@ docker build jenkins/ -f jenkins/DOCKERFILE -t myjenkins-blueocean:2.427-1
 Run the Jenkins container using your custom image:
 
 ```bash
-docker run --name jenkins-blueocean --restart=on-failure --detach --network jenkins --env DOCKER_HOST=tcp://docker:2376 --env DOCKER_CERT_PATH=/certs/client --env DOCKER_TLS_VERIFY=1 --publish 8080:8080 --publish 50000:50000 --volume jenkins-data:/var/jenkins_home --volume jenkins-docker-certs:/certs/client:ro myjenkins-blueocean:2.427-1
+docker run --name jenkins-blueocean --restart=on-failure --detach --network jenkins --env DOCKER_HOST=tcp://docker:2376 --env DOCKER_CERT_PATH=/certs/client --env DOCKER_TLS_VERIFY=1 --publish 8080:8080 --publish 50000:50000 --volume jenkins-data:/var/jenkins_home --volume jenkins-docker-certs:/certs/client:ro myjenkins-blueocean:2.442
 ```
 
 ### Initialization Steps
@@ -55,7 +55,22 @@ Visit <http://localhost:8080> and input the initial password.
 Install the suggested plugins.
 Finally, log in using `admin` and the password you've retrieved.
 
-### Add GitHub to Known Hosts
+### Troubleshooting
+
+#### Plugin is Missing
+
+During the initial setup of Jenkins, some users might encounter a `Dependency errors` message. This issue can occur under certain unclear conditions when accessing `Dashboard -> Manage Jenkins` for the first time.
+
+In our experience, this message was specifically related to the plugin dependency `json-path-api (2.8.0-5.v07cb_a_1ca_738c)`. If you face this issue, it can be resolved by connecting to the Jenkins container and manually installing the required plugin. Follow these steps:
+
+```bash
+docker exec -it jenkins-blueocean bash
+jenkins-plugin-cli --plugins json-path-api:2.8.0-5.v07cb_a_1ca_738c
+exit
+docker restart jenkins-blueocean
+```
+
+#### Add GitHub to Known Hosts
 
 To avoid SSH errors when connecting to GitHub, execute the following steps:
 
@@ -66,10 +81,12 @@ yes
 exit
 ```
 
+Ignore the `Permission denied (publickey)` reply, that is the expected result
+
 ## Configuration
 
-The subsequent steps outline the necessary configurations required to execute the Jenkinsfile associated with this Proof of Concept (PoC).
-These configurations are essential for the successful orchestration of the test pipeline and include adding AWS and RDS credentials to Jenkins.
+Follow these steps to configure Jenkins for running the Jenkinsfile in this PoC. You'll need to add AWS and RDS credentials to Jenkins to ensure the Test Pipeline runs successfully.
+
 
 ### Add Credentials
 

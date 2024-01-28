@@ -27,17 +27,10 @@ This separation is done to facilitate streamlined testing, as the test pipeline 
 
 ## Devcontainer
 
-The inclusion of a devcontainer definition in this repository serves as an optional, yet standardized, development environment primarily intended for the research and development phases of this project. Visitors interested in hands-on exploration of the proof of concept (PoC) may utilize this environment to bypass manual setup procedures. Those primarily concerned with the test pipeline may proceed directly to the [Test Pipeline](#test-pipeline) section.
+This repository includes a devcontainer definition, providing a consistent and isolated development environment, especially beneficial during the research and development stages of this project. If your focus is on the test pipeline, you may skip ahead to the [Test Pipeline](#test-pipeline) section.
 
-Supported by platforms such as [VS Code](https://code.visualstudio.com/docs/devcontainers/containers) and [GitHub Codespaces](https://docs.github.com/en/codespaces/setting-up-your-project-for-codespaces/adding-a-dev-container-configuration/introduction-to-dev-containers), devcontainers encapsulate required tools and libraries, simplifying the setup process.
-
-To use the devcontainer, first clone this repository along with its submodule using the following command:
-
-```bash
-git clone --recurse-submodules https://github.com/fex01/thesis-ws.git
-```
-
-Next, follow the steps below to set up and run the devcontainer locally with VS Code.
+DevContainers are essentially containerized development environments, allowing for the encapsulation of tools and libraries required for a project. This approach significantly simplifies the setup process and ensures a uniform development experience.
+While this guide is tailored for use with [VS Code](https://code.visualstudio.com/docs/devcontainers/containers), those opting for GitHub Codespaces should consult the [GitHub Codespaces documentation](https://docs.github.com/en/codespaces/setting-up-your-project-for-codespaces/adding-a-dev-container-configuration/introduction-to-dev-containers) to familiarize themselves with its specifics.
 
 ### Devcontainer Prerequisites
 
@@ -47,15 +40,27 @@ Next, follow the steps below to set up and run the devcontainer locally with VS 
 
 For more details, consult the [VS Code Guide](https://code.visualstudio.com/docs/devcontainers/tutorial).
 
-### Devcontainer Configuration
+### Getting Started
+
+To get started, clone this repository and its submodule using the following command:
+
+```bash
+git clone --recurse-submodules https://github.com/fex01/thesis-ws.git
+```
+
+Once you have cloned the repository, open the project folder in VS Code. At this stage, you will likely encounter a prompt suggesting to 'Reopen in Container'. Please ignore this prompt for now, as there are initial configuration steps that need to be completed first. These steps are crucial to ensure that the devcontainer is properly set up before proceeding with its execution.
 
 #### Credentials Configuration
 
-- **AWS Credentials**: You have two options for configuring AWS credentials within the DevContainer:
-  1. **.env File**: Create a `.env` file based on the [.env_template](/.env_template) available in the project root directory. Populate `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` with your actual AWS credentials.
-  2. **AWS Host Configuration Integration**: You can also use the host machine's AWS configuration by following the instructions under [AWS Host Configuration Integration](#aws-host-configuration-integration).
+For guidance on obtaining the necessary credentials, please refer to the [Account Creation](#account-creation) section of this README.
 
-- **InfraCost Credentials**: To configure InfraCost, create a `.env` file based on the [.env_template](/.env_template)  available in the project root directory. Populate `INFRACOST_API_KEY` with your actual InfraCost API key.
+- **AWS Credentials**: These credentials are essential for deploying infrastructure to the cloud provider AWS, allowing for the management and operation of cloud resources. You have two options for configuring AWS credentials within the DevContainer:
+  1. **.env File**: Create a `.env` file based on the [.env_template](/.env_template) available in the project root directory. Populate `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` with your actual AWS credentials.
+  2. **AWS Host Configuration Integration**: Use the host machine's AWS configuration by following the instructions under [AWS Host Configuration Integration](#aws-host-configuration-integration).
+
+- **InfraCost Credentials**: These credentials are required to generate cost breakdowns for the resources configured as part of your infrastructure, facilitating effective cost management and optimization. To configure InfraCost:
+  - Create a `.env` file based on the [.env_template](/.env_template) available in the project root directory. Populate `INFRACOST_API_KEY` with your actual InfraCost API key.
+
 
 #### Devcontainer Configuration Details
 
@@ -202,7 +207,7 @@ If you do not currently have an AWS account, the following is a concise outline 
 
     - Click on the username and select `Create access key`. Note that although temporary credentials are recommended for heightened security, permanent credentials are deemed sufficient for the purpose of this guide. Ensure that you store the `Access key` and `Secret access key` in a secure location.
 
-4. **Local CLI Configuration**: Lastly, configure your local AWS CLI via the `aws configure` command. You will be prompted to enter the `Access key ID` and `Secret access key` generated earlier, as well as your preferred AWS region (e.g., `eu-west-3`). This action will create `~/.aws/credentials` and `~/.aws/config` files, completing the setup.
+4. **Local CLI Configuration** (Optional): Configure the local AWS CLI with the `aws configure` command, if required for your environment outside of the [DevContainer](#devcontainer). This step involves entering the `Access key ID` and `Secret access key` from earlier, and selecting your preferred AWS region (e.g., `eu-west-3`). It results in the creation of `~/.aws/credentials` and `~/.aws/config` files. Note that this step is not necessary if the credentials are solely for use within the DevContainer.
 
 #### AWS Host Configuration Integration
 

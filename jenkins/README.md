@@ -3,6 +3,27 @@
 This document serves as an instructional guide for setting up and configuring a Jenkins test pipeline, tailored specifically for the execution of this project's tests.
 Should you already possess an active Jenkins installation, the [Configuration](#configuration) section will be the sole area requiring your attention.
 
+1. [Setup: Dockerized Jenkins](#setup-dockerized-jenkins)
+   - 1.1 [Initialize Docker Network](#initialize-docker-network)
+   - 1.2 [Run Jenkins Docker-in-Docker Container](#run-jenkins-docker-in-docker-container)
+   - 1.3 [Build Custom Jenkins Image](#build-custom-jenkins-image)
+   - 1.4 [Run Jenkins Container](#run-jenkins-container)
+   - 1.5 [Initialization Steps](#initialization-steps)
+   - 1.6 [Troubleshooting](#troubleshooting)
+      - 1.6.1 [Plugin is Missing](#plugin-is-missing)
+      - 1.6.2 [Add GitHub to Known Hosts](#add-github-to-known-hosts)
+2. [Configuration](#configuration)
+   - 2.1 [Add Credentials](#add-credentials)
+      - 2.1.1 [AWS Credentials](#aws-credentials)
+      - 2.1.2 [RDS Credentials](#rds-credentials)
+      - 2.1.3 [Infracost Credentials](#infracost-credentials)
+   - 2.2 [Create Pipeline](#create-pipeline)
+3. [Manual Builds](#manual-builds)
+4. [Automated Build Triggering](#automated-build-triggering)
+   - 4.1 [Precautions and Usage](#precautions-and-usage)
+   - 4.2 [Custom Docker Image Consideration](#custom-docker-image-consideration)
+
+
 ## Setup: Dockerized Jenkins
 
 This section guides you through setting up a dockerized Jenkins instance, particularly useful if you haven't already installed Jenkins.
@@ -131,7 +152,7 @@ Once you have acquired your credentials, proceed with the following steps to add
 ### Create Pipeline
 
 To create a new pipeline, navigate to `Dashboard -> New Item`.
-Enter a name (e.g., `thesis`), select `Pipeline`, and click `OK`.
+Enter a name for the new job (e.g., `thesis`), select `Pipeline`, and click `OK`.
 Scroll to the `Pipeline` section:
 
 - Choose `Pipeline script from SCM` from the `Definition` dropdown.
@@ -144,6 +165,44 @@ Click `Save`.
 
 This concludes the Jenkins setup and configuration guide for this project's test pipeline.
 For further details on creating a pipeline, consult the [SCM Pipeline Documentation](https://www.jenkins.io/doc/book/pipeline/getting-started/#in-scm).
+
+## Manual Builds
+
+Manually triggering a build in Jenkins is straightforward:
+
+1. **Initial Build**:
+   - For the first build, navigate to `Dashboard -> <job name>` and click `Build Now`.
+   - The first build is essential as it allows Jenkins to recognize the parameters specified in the Jenkinsfile.
+
+2. **Triggering Builds with Parameters**:
+   - Post the initial build, the `Build with Parameters` option will be available under `Dashboard -> <job name>`.
+   - Here, you can set values for various parameters.
+
+3. **Available Parameters**:
+   - `dynamic_testing` (Boolean): Run dynamic tests. Default: `false`.
+   - `nuke` (Boolean): Use only in test environments - highly destructive! Default: `false`.
+   - `terraform_version` (String): Specifies the Terraform version. Default: `1.6.2`.
+   - `infracost_version` (String): Sets the Infracost version. Default: `0.10.30`.
+   - `tfsec_version` (String): Determines the tfsec version. Default: `1.28`.
+   - `pytest_version` (String): Version of the databricksdocs/pytest image. Default: `0.3.4-rc.2`.
+   - `terratest_version` (String): Terratest version to use. Default: `0.29.0`.
+   - `cloud_nuke_version` (String): Version for cloud-nuke. Default: `0.32.0`.
+   - `aws_cli_version` (String): AWS CLI version. Default: `2.13.32`.
+
+4. **Monitor Build Progress**:
+   - Go to `Dashboard -> <job name> -> Build History` to observe the build status.
+   - Click on the build number for detailed information.
+
+5. **Viewing the Console Log**:
+   - For in-depth insights, access `Console Output` in the build's page.
+   - This log provides detailed progression and diagnostic information.
+
+6. **Build Overview**:
+   - The `Dashboard -> <job name>` page displays an overview of all builds and their outcomes.
+
+By setting parameters, you gain control over the build's behavior, ensuring it aligns with your specific requirements and scenarios.
+
+
 
 ## Automated Build Triggering
 

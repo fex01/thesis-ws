@@ -88,7 +88,7 @@ The submodule is an independent repository that houses the core elements of the 
 It includes the IaC configuration written in Terraform, a Jenkinsfile for defining the test pipeline, and the actual test implementations.
 This separation allows for streamlined testing, as the test pipeline can directly check out only the executable code.
 
-For more information on the specifics of the submodule, please refer to its [README](./terraform/README.md).
+For more information on the specifics of the submodule, please refer to its [README](https://github.com/fex01/thesis-tf/blob/main/README.md).
 
 ## Data Collection
 

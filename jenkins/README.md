@@ -202,8 +202,6 @@ Manually triggering a build in Jenkins is straightforward:
 
 By setting parameters, you gain control over the build's behavior, ensuring it aligns with your specific requirements and scenarios.
 
-
-
 ## Automated Build Triggering
 
 Builds can be manually initiated via the Jenkins Dashboard, which provides a user-friendly interface for pipeline management.

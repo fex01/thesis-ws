@@ -1,6 +1,6 @@
 # Quantitative Cost Assessment of IaC Testing: PoC Workspace
 
-This repository serves as a supporting workspace for the proof-of-concept (PoC) implementation related to the Master Thesis titled "Quantitative Cost Assessment of IaC Testing".
+This repository serves as a supporting workspace for the proof-of-concept (PoC) implementation related to the [Master Thesis "Quantitative Cost Assessment of IaC Testing"](./Thesis Quantitative Cost Assessment of Infrastructure as Code Testing.pdf).
 While the actual PoC is encapsulated within a submodule, this repository contains the essential guides and tooling required to set up and run the PoC.
 
 This separation is done to facilitate streamlined testing, as the test pipeline can directly check out only the executable code - see [Submodule thesis-tf](#submodule-thesis-tf) for more information.
